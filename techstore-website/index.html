@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Professional Laptops</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo" data-key="logo">TechStore</a>
+            <div class="nav-links">
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ar">AR</button>
+                    <button class="lang-btn" data-lang="fr">FR</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1 data-key="hero-title">Find Your Perfect Laptop</h1>
+            <p data-key="hero-subtitle">Choose by purpose, not by complicated specs</p>
+        </section>
+
+        <section class="categories">
+            <div class="container">
+                <h2 data-key="categories-title" style="text-align: center; color: #333; margin-bottom: 1rem;">What will you use your laptop for?</h2>
+                <div class="category-grid">
+                    <div class="category-card" data-category="study">
+                        <div class="category-icon">📚</div>
+                        <h3 data-key="study-title">Study & Office Work</h3>
+                        <p data-key="study-desc">Perfect for documents, research, and online classes</p>
+                    </div>
+                    <div class="category-card" data-category="coding">
+                        <div class="category-icon">💻</div>
+                        <h3 data-key="coding-title">Programming & Development</h3>
+                        <p data-key="coding-desc">Powerful enough for coding and software development</p>
+                    </div>
+                    <div class="category-card" data-category="design">
+                        <div class="category-icon">🎨</div>
+                        <h3 data-key="design-title">Design & 3D Work</h3>
+                        <p data-key="design-desc">High-performance for graphics and 3D modeling</p>
+                    </div>
+                    <div class="category-card" data-category="gaming">
+                        <div class="category-icon">🎮</div>
+                        <h3 data-key="gaming-title">Gaming</h3>
+                        <p data-key="gaming-desc">Built for the latest games and entertainment</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="products-study" class="products">
+            <div class="container">
+                <h2 data-key="study-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Study & Office Laptops</h2>
+                <div class="product-grid" id="study-products"></div>
+            </div>
+        </section>
+
+        <section id="products-coding" class="products">
+            <div class="container">
+                <h2 data-key="coding-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Programming Laptops</h2>
+                <div class="product-grid" id="coding-products"></div>
+            </div>
+        </section>
+
+        <section id="products-design" class="products">
+            <div class="container">
+                <h2 data-key="design-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Design & 3D Laptops</h2>
+                <div class="product-grid" id="design-products"></div>
+            </div>
+        </section>
+
+        <section id="products-gaming" class="products">
+            <div class="container">
+                <h2 data-key="gaming-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Gaming Laptops</h2>
+                <div class="product-grid" id="gaming-products"></div>
+            </div>
+        </section>
+
+        <section class="contact-info">
+            <h2 data-key="contact-title">Contact Us</h2>
+            <p data-key="contact-subtitle">Ready to order? Get in touch with us!</p>
+            <div class="contact-methods">
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>orders@techstore.com</span>
+                </div>
+                <div class="contact-item">
+                    <span>📱</span>
+                    <span>+213 123 456 789</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 data-key="order-title">Order Laptop</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label data-key="product-label">Product:</label>
+                    <input type="text" id="productName" readonly>
+                </div>
+                <div class="form-group">
+                    <label data-key="name-label">Full Name:</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label data-key="email-label">Email:</label>
+                    <input type="email" id="customerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label data-key="phone-label">Phone Number:</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label data-key="address-label">Delivery Address:</label>
+                    <textarea id="customerAddress" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-key="notes-label">Additional Notes:</label>
+                    <textarea id="orderNotes" rows="2"></textarea>
+                </div>
+                <button type="submit" class="submit-btn" data-key="submit-order">Submit Order</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

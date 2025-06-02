@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .admin-content {
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            padding: 0.8rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .laptops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .laptop-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .laptop-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .laptop-image {
+            width: 100%;
+            height: 150px;
+            background: #f0f2f5;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .laptop-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .laptop-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .laptop-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .laptop-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 1rem 0;
+        }
+
+        .laptop-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .orders-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .order-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e1e8ed;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .laptop-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>🛠️ TechStore Admin</h1>
+            <p>Manage your laptop inventory and orders</p>
+        </div>
+
+        <div class="admin-content">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+                <button class="tab-btn" data-tab="add-laptop">➕ Add Laptop</button>
+                <button class="tab-btn" data-tab="manage-laptops">💻 Manage Laptops</button>
+                <button class="tab-btn" data-tab="orders">📦 Orders</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-laptops">0</div>
+                        <div class="stat-label">Total Laptops</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-orders">0</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pending-orders">0</div>
+                        <div class="stat-label">Pending Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="revenue">$0</div>
+                        <div class="stat-label">Revenue</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Laptop Tab -->
+            <div id="add-laptop" class="tab-content">
+                <div class="form-section">
+                    <h2>Add New Laptop</h2>
+                    <div class="success-message" id="success-message">
+                        Laptop added successfully!
+                    </div>
+                    <form id="laptop-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="laptop-name">Laptop Name</label>
+                                <input type="text" id="laptop-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-category">Category</label>
+                                <select id="laptop-category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="study">Study & Office</option>
+                                    <option value="coding">Programming</option>
+                                    <option value="design">Design & 3D</option>
+                                    <option value="gaming">Gaming</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-processor">Processor</label>
+                                <input type="text" id="laptop-processor" placeholder="e.g., Intel Core i7" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-ram">RAM</label>
+                                <input type="text" id="laptop-ram" placeholder="e.g., 16GB" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-storage">Storage</label>
+                                <input type="text" id="laptop-storage" placeholder="e.g., 512GB SSD" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-display">Display</label>
+                                <input type="text" id="laptop-display" placeholder="e.g., 15.6\" FHD" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-graphics">Graphics (Optional)</label>
+                                <input type="text" id="laptop-graphics" placeholder="e.g., RTX 4060">
+                            </div>
+                            <div class="form-group">
+                                <label for="laptop-price">Price</label>
+                                <input type="text" id="laptop-price" placeholder="e.g., $1200" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="laptop-description">Description</label>
+                                <textarea id="laptop-description" rows="3" placeholder="Brief description of the laptop" required></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="laptop-image">Image URL</label>
+                                <input type="url" id="laptop-image" placeholder="https://example.com/image.jpg" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Laptop</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Manage Laptops Tab -->
+            <div id="manage-laptops" class="tab-content">
+                <h2>Manage Laptops</h2>
+                <div class="laptops-grid" id="laptops-grid">
+                    <!-- Laptops will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content">
+                <h2>Customer Orders</h2>
+                <table class="orders-table" id="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody">
+                        <!-- Orders will be displayed here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin data storage (in a real app, this would be a database)
+        let adminData = {
+            laptops: JSON.parse(localStorage.getItem('adminLaptops')) || [],
+            orders: JSON.parse(localStorage.getItem('adminOrders')) || []
+        };
+
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdmin();
+            syncWithMainSite();
+        });
+
+        function initializeAdmin() {
+            setupTabNavigation();
+            setupLaptopForm();
+            updateDashboard();
+            displayLaptops();
+            displayOrders();
+        }
+
+        function setupTabNavigation() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show active tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        function setupLaptopForm() {
+            document.getElementById('laptop-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addLaptop();
+            });
+        }
+
+        function addLaptop() {
+            const laptop = {
+                id: Date.now(),
+                name: document.getElementById('laptop-name').value,
+                category: document.getElementById('laptop-category').value,
+                processor: document.getElementById('laptop-processor').value,
+                ram: document.getElementById('laptop-ram').value,
+                storage: document.getElementById('laptop-storage').value,
+                display: document.getElementById('laptop-display').value,
+                graphics: document.getElementById('laptop-graphics').value,
+                price: document.getElementById('laptop-price').value,
+                description: document.getElementById('laptop-description').value,
+                image: document.getElementById('laptop-image').value,
+                specs: generateSpecs()
+            };
+
+            adminData.laptops.push(laptop);
+            saveAdminData();
+            syncWithMainSite();
+            
+            // Show success message
+            document.getElementById('success-message').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('success-message').style.display = 'none';
+            }, 3000);
+            
+            // Reset form
+            document.getElementById('laptop-form').reset();
+            
+            // Update displays
+            updateDashboard();
+            displayLaptops();
+        }
+
+        function generateSpecs() {
+            const processor = document.getElementById('laptop-processor').value;
+            const ram = document.getElementById('laptop-ram').value;
+            const storage = document.getElementById('laptop-storage').value;
+            const display = document.getElementById('laptop-display').value;
+            const graphics = document.getElementById('laptop-graphics').value;
+            
+            let specs = `${processor} • ${ram} RAM • ${storage} • ${display} Display`;
+            if (graphics) {
+                specs = `${processor} • ${ram} RAM • ${graphics} • ${storage} • ${display} Display`;
+            }
+            
+            return specs;
+        }
+
+        function deleteLaptop(id) {
+            if (confirm('Are you sure you want to delete this laptop?')) {
+                adminData.laptops = adminData.laptops.filter(laptop => laptop.id !== id);
+                saveAdminData();
+                syncWithMainSite();
+                displayLaptops();
+                updateDashboard();
+            }
+        }
+
+        function displayLaptops() {
+            const grid = document.getElementById('laptops-grid');
+            grid.innerHTML = '';
+            
+            adminData.laptops.forEach(laptop => {
+                const card = document.createElement('div');
+                card.className = 'laptop-card';
+                card.innerHTML = `
+                    <div class="laptop-image">
+                        <img src="${laptop.image}" alt="${laptop.name}" onerror="this.style.display='none'">
+                    </div>
+                    <div class="laptop-info">
+                        <h3>${laptop.name}</h3>
+                        <p><strong>Category:</strong> ${laptop.category}</p>
+                        <p><strong>Specs:</strong> ${laptop.specs}</p>
+                        <p>${laptop.description}</p>
+                        <div class="laptop-price">${laptop.price}</div>
+                        <div class="laptop-actions">
+                            <button class="btn btn-danger btn-small" onclick="deleteLaptop(${laptop.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function displayOrders() {
+            const tbody = document.getElementById('orders-tbody');
+            tbody.innerHTML = '';
+            
+            adminData.orders.forEach((order, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${order.id || (1000 + index)}</td>
+                    <td>${order.name}</td>
+                    <td>${order.product}</td>
+                    <td>${order.date || new Date().toLocaleDateString()}</td>
+                    <td><span class="order-status status-pending">Pending</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="viewOrder(${index})">View</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function viewOrder(index) {
+            const order = adminData.orders[index];
+            alert(`Order Details:\n\nCustomer: ${order.name}\nEmail: ${order.email}\nPhone: ${order.phone}\nProduct: ${order.product}\nAddress: ${order.address}\nNotes: ${order.notes || 'None'}`);
+        }
+
+        function updateDashboard() {
+            document.getElementById('total-laptops').textContent = adminData.laptops.length;
+            document.getElementById('total-orders').textContent = adminData.orders.length;
+            document.getElementById('pending-orders').textContent = adminData.orders.length;
+            
+            // Calculate revenue (simple estimation)
+            const revenue = adminData.orders.length * 1000; // Assume average $1000 per order
+            document.getElementById('revenue').textContent = `$${revenue.toLocaleString()}`;
+        }
+
+        function saveAdminData() {
+            localStorage.setItem('adminLaptops', JSON.stringify(adminData.laptops));
+            localStorage.setItem('adminOrders', JSON.stringify(adminData.orders));
+        }
+
+        function syncWithMainSite() {
+            // Convert admin laptop format to main site format
+            const laptopsByCategory = {
+                study: [],
+                coding: [],
+                design: [],
+                gaming: []
+            };
+            
+            adminData.laptops.forEach(laptop => {
+                if (laptopsByCategory[laptop.category]) {
+                    laptopsByCategory[laptop.category].push({
+                        name: laptop.name,
+                        specs: laptop.specs,
+                        price: laptop.price,
+                        description: laptop.description,
+                        image: laptop.image
+                    });
+                }
+            });
+            
+            // Save to localStorage for main site to use
+            localStorage.setItem('laptopsData', JSON.stringify(laptopsByCategory));
+        }
+
+        // Load orders from main site
+        function loadOrdersFromMainSite() {
+            const mainSiteOrders = JSON.parse(localStorage.getItem('customerOrders') || '[]');
+            adminData.orders = [...adminData.orders, ...mainSiteOrders];
+            // Clear main site orders after loading
+            localStorage.removeItem('customerOrders');
+            saveAdminData();
+        }
+
+        // Check for new orders periodically
+        setInterval(loadOrdersFromMainSite, 5000);
+    </script>
+</body>
+</html>
