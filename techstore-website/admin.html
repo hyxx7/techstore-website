@@ -522,70 +522,403 @@
 
     <script>
         // Configuration - Update these with your JSONBin.io credentials
-        const API_KEY = 'YOUR_JSONBIN_API_KEY';
-        const BIN_ID = 'YOUR_BIN_ID';
+        const API_KEY = '$2a$10$o5DliJCu1hQKnALQXQAL8uLUrsVyTdMPSsZ4Va8ML50YVbWziKzhe';
+        const BIN_ID = '683e436f8960c979a5a48794';
         const BASE_URL = 'https://api.jsonbin.io/v3/b/';
 
-        // In-memory storage for demo purposes
-        let laptops = [
-            {
-                id: 1,
-                name: 'MacBook Pro 14"',
-                brand: 'Apple',
-                processor: 'M3 Pro',
-                ram: '16',
-                storage: '512GB SSD',
-                price: 2399.99,
-                stock: 5,
-                image: 'https://via.placeholder.com/300x200/667eea/ffffff?text=MacBook+Pro',
-                description: 'Powerful laptop for professionals with M3 Pro chip'
-            },
-            {
-                id: 2,
-                name: 'Dell XPS 13',
-                brand: 'Dell',
-                processor: 'Intel i7-13700H',
-                ram: '16',
-                storage: '1TB SSD',
-                price: 1699.99,
-                stock: 8,
-                image: 'https://via.placeholder.com/300x200/764ba2/ffffff?text=Dell+XPS+13',
-                description: 'Premium ultrabook with excellent display'
-            },
-            {
-                id: 3,
-                name: 'ThinkPad X1 Carbon',
-                brand: 'Lenovo',
-                processor: 'Intel i5-13500U',
-                ram: '8',
-                storage: '256GB SSD',
-                price: 1299.99,
-                stock: 12,
-                image: 'https://via.placeholder.com/300x200/333333/ffffff?text=ThinkPad+X1',
-                description: 'Business laptop with excellent keyboard'
-            }
-        ];
+        // Data storage
+        let laptops = [];
+        let orders = [];
+        let isDataLoaded = false;
 
-        let orders = [
-            {
-                id: 'ORD-001',
-                customer: 'John Doe',
-                laptop: 'MacBook Pro 14"',
-                quantity: 1,
-                total: 2399.99,
-                status: 'pending',
-                date: '2025-06-01'
-            },
-            {
-                id: 'ORD-002',
-                customer: 'Jane Smith',
-                laptop: 'Dell XPS 13',
-                quantity: 2,
-                total: 3399.98,
-                status: 'completed',
-                date: '2025-05-30'
+        // API Helper Functions
+        async function fetchData() {
+            if (!API_KEY || API_KEY === 'YOUR_JSONBIN_API_KEY' || !BIN_ID || BIN_ID === 'YOUR_BIN_ID') {
+                // Use demo data if API not configured
+                laptops = [
+                    {
+                        id: 1,
+                        name: 'MacBook Pro 14"',
+                        brand: 'Apple',
+                        processor: 'M3 Pro',
+                        ram: '16',
+                        storage: '512GB SSD',
+                        price: 2399.99,
+                        stock: 5,
+                        image: 'https://via.placeholder.com/300x200/667eea/ffffff?text=MacBook+Pro',
+                        description: 'Powerful laptop for professionals with M3 Pro chip'
+                    },
+                    {
+                        id: 2,
+                        name: 'Dell XPS 13',
+                        brand: 'Dell',
+                        processor: 'Intel i7-13700H',
+                        ram: '16',
+                        storage: '1TB SSD',
+                        price: 1699.99,
+                        stock: 8,
+                        image: 'https://via.placeholder.com/300x200/764ba2/ffffff?text=Dell+XPS+13',
+                        description: 'Premium ultrabook with excellent display'
+                    },
+                    {
+                        id: 3,
+                        name: 'ThinkPad X1 Carbon',
+                        brand: 'Lenovo',
+                        processor: 'Intel i5-13500U',
+                        ram: '8',
+                        storage: '256GB SSD',
+                        price: 1299.99,
+                        stock: 12,
+                        image: 'https://via.placeholder.com/300x200/333333/ffffff?text=ThinkPad+X1',
+                        description: 'Business laptop with excellent keyboard'
+                    }
+                ];
+
+                orders = [
+                    {
+                        id: 'ORD-001',
+                        customer: 'John Doe',
+                        laptop: 'MacBook Pro 14"',
+                        quantity: 1,
+                        total: 2399.99,
+                        status: 'pending',
+                        date: '2025-06-01'
+                    },
+                    {
+                        id: 'ORD-002',
+                        customer: 'Jane Smith',
+                        laptop: 'Dell XPS 13',
+                        quantity: 2,
+                        total: 3399.98,
+                        status: 'completed',
+                        date: '2025-05-30'
+                    }
+                ];
+                isDataLoaded = true;
+                return;
             }
-        ];
+
+            try {
+                showMessage('loading', 'Loading data from database...');
+                
+                const response = await fetch(`${BASE_URL}${BIN_ID}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': API_KEY,
+                        'X-JSON-Path': '
+
+        // Utility functions
+        function showMessage(type, message) {
+            const messageEl = document.getElementById(`${type}-message`);
+            messageEl.textContent = message;
+            messageEl.style.display = 'block';
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load data for specific tabs
+            if (tabName === 'dashboard') {
+                updateDashboardStats();
+            } else if (tabName === 'inventory') {
+                loadLaptops();
+            } else if (tabName === 'orders') {
+                loadOrders();
+            }
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('total-laptops').textContent = laptops.length;
+            document.getElementById('in-stock').textContent = laptops.filter(l => l.stock > 0).length;
+            document.getElementById('total-orders').textContent = orders.length;
+            document.getElementById('pending-orders').textContent = orders.filter(o => o.status === 'pending').length;
+        }
+
+        function loadLaptops() {
+            const container = document.getElementById('laptops-container');
+            container.innerHTML = '';
+            
+            if (!isDataLoaded) {
+                container.innerHTML = '<p>Loading laptops...</p>';
+                return;
+            }
+            
+            if (laptops.length === 0) {
+                container.innerHTML = '<p>No laptops found. Add some laptops to get started!</p>';
+                return;
+            }
+            
+            laptops.forEach(laptop => {
+                const laptopCard = document.createElement('div');
+                laptopCard.className = 'laptop-card';
+                laptopCard.innerHTML = `
+                    <div class="laptop-image">
+                        <img src="${laptop.image}" alt="${laptop.name}" onerror="this.src='https://via.placeholder.com/300x200/f0f2f5/999999?text=No+Image'">
+                    </div>
+                    <div class="laptop-info">
+                        <h3>${laptop.name}</h3>
+                        <p><strong>Brand:</strong> ${laptop.brand}</p>
+                        <p><strong>Processor:</strong> ${laptop.processor}</p>
+                        <p><strong>RAM:</strong> ${laptop.ram}GB | <strong>Storage:</strong> ${laptop.storage}</p>
+                        <p><strong>Stock:</strong> ${laptop.stock} units</p>
+                        <div class="laptop-price">${laptop.price.toFixed(2)}</div>
+                        <p>${laptop.description}</p>
+                    </div>
+                    <div class="laptop-actions">
+                        <button class="btn btn-primary btn-small" onclick="editLaptop(${laptop.id})">Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteLaptop(${laptop.id})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(laptopCard);
+            });
+        }
+
+        function loadOrders() {
+            const tbody = document.getElementById('orders-table-body');
+            tbody.innerHTML = '';
+            
+            if (!isDataLoaded) {
+                tbody.innerHTML = '<tr><td colspan="8">Loading orders...</td></tr>';
+                return;
+            }
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8">No orders found.</td></tr>';
+                return;
+            }
+            
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${order.laptop}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.total.toFixed(2)}</td>
+                    <td><span class="order-status status-${order.status}">${order.status.toUpperCase()}</span></td>
+                    <td>${order.date}</td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="updateOrderStatus('${order.id}')">
+                            ${order.status === 'pending' ? 'Complete' : 'Pending'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function addLaptop(laptopData) {
+            const newId = laptops.length > 0 ? Math.max(...laptops.map(l => l.id)) + 1 : 1;
+            const newLaptop = {
+                id: newId,
+                ...laptopData
+            };
+            laptops.push(newLaptop);
+            
+            const saved = await saveData();
+            if (saved) {
+                showMessage('success', 'Laptop added and saved to database!');
+            } else {
+                showMessage('success', 'Laptop added locally (configure API to save permanently)');
+            }
+            
+            loadLaptops();
+            updateDashboardStats();
+        }
+
+        function editLaptop(id) {
+            const laptop = laptops.find(l => l.id === id);
+            if (laptop) {
+                // Fill form with laptop data for editing
+                document.getElementById('laptop-name').value = laptop.name;
+                document.getElementById('laptop-brand').value = laptop.brand;
+                document.getElementById('laptop-processor').value = laptop.processor;
+                document.getElementById('laptop-ram').value = laptop.ram;
+                document.getElementById('laptop-storage').value = laptop.storage;
+                document.getElementById('laptop-price').value = laptop.price;
+                document.getElementById('laptop-stock').value = laptop.stock;
+                document.getElementById('laptop-image').value = laptop.image;
+                document.getElementById('laptop-description').value = laptop.description;
+                
+                // Switch to add laptop tab
+                showTab('add-laptop');
+                
+                // Change form behavior to edit mode
+                const form = document.getElementById('laptop-form');
+                form.dataset.editId = id;
+                form.querySelector('button[type="submit"]').textContent = 'Update Laptop';
+            }
+        }
+
+        async function deleteLaptop(id) {
+            if (confirm('Are you sure you want to delete this laptop?')) {
+                laptops = laptops.filter(l => l.id !== id);
+                
+                const saved = await saveData();
+                if (saved) {
+                    showMessage('success', 'Laptop deleted and changes saved to database!');
+                } else {
+                    showMessage('success', 'Laptop deleted locally (configure API to save permanently)');
+                }
+                
+                loadLaptops();
+                updateDashboardStats();
+            }
+        }
+
+        async function updateOrderStatus(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = order.status === 'pending' ? 'completed' : 'pending';
+                
+                const saved = await saveData();
+                if (saved) {
+                    showMessage('success', `Order ${orderId} status updated and saved to database!`);
+                } else {
+                    showMessage('success', `Order ${orderId} status updated locally (configure API to save permanently)`);
+                }
+                
+                loadOrders();
+                updateDashboardStats();
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('laptop-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('laptop-name').value,
+                brand: document.getElementById('laptop-brand').value,
+                processor: document.getElementById('laptop-processor').value,
+                ram: document.getElementById('laptop-ram').value,
+                storage: document.getElementById('laptop-storage').value,
+                price: parseFloat(document.getElementById('laptop-price').value),
+                stock: parseInt(document.getElementById('laptop-stock').value),
+                image: document.getElementById('laptop-image').value || 'https://via.placeholder.com/300x200/f0f2f5/999999?text=No+Image',
+                description: document.getElementById('laptop-description').value
+            };
+            
+            const editId = this.dataset.editId;
+            if (editId) {
+                // Edit existing laptop
+                const laptopIndex = laptops.findIndex(l => l.id === parseInt(editId));
+                if (laptopIndex !== -1) {
+                    laptops[laptopIndex] = { ...laptops[laptopIndex], ...formData };
+                    
+                    const saved = await saveData();
+                    if (saved) {
+                        showMessage('success', 'Laptop updated and saved to database!');
+                    } else {
+                        showMessage('success', 'Laptop updated locally (configure API to save permanently)');
+                    }
+                }
+                delete this.dataset.editId;
+                this.querySelector('button[type="submit"]').textContent = 'Add Laptop';
+            } else {
+                // Add new laptop
+                await addLaptop(formData);
+            }
+            
+            this.reset();
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            await fetchData();
+            updateDashboardStats();
+            loadLaptops();
+        });
+    </script>
+</body>
+</html>
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                laptops = data.record.laptops || [];
+                orders = data.record.orders || [];
+                isDataLoaded = true;
+                
+                document.getElementById('loading-message').style.display = 'none';
+                showMessage('success', 'Data loaded successfully from database!');
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                showMessage('error', 'Failed to load data from database. Using demo data.');
+                // Fall back to demo data
+                laptops = [
+                    {
+                        id: 1,
+                        name: 'MacBook Pro 14"',
+                        brand: 'Apple',
+                        processor: 'M3 Pro',
+                        ram: '16',
+                        storage: '512GB SSD',
+                        price: 2399.99,
+                        stock: 5,
+                        image: 'https://via.placeholder.com/300x200/667eea/ffffff?text=MacBook+Pro',
+                        description: 'Powerful laptop for professionals with M3 Pro chip'
+                    }
+                ];
+                orders = [];
+                isDataLoaded = true;
+            }
+        }
+
+        async function saveData() {
+            if (!API_KEY || API_KEY === 'YOUR_JSONBIN_API_KEY' || !BIN_ID || BIN_ID === 'YOUR_BIN_ID') {
+                showMessage('error', 'Please configure your JSONBin.io API credentials to save data permanently.');
+                return false;
+            }
+
+            try {
+                showMessage('loading', 'Saving data to database...');
+                
+                const response = await fetch(`${BASE_URL}${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        laptops: laptops,
+                        orders: orders
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                document.getElementById('loading-message').style.display = 'none';
+                showMessage('success', 'Data saved successfully to database!');
+                return true;
+            } catch (error) {
+                document.getElementById('loading-message').style.display = 'none';
+                console.error('Error saving data:', error);
+                showMessage('error', 'Failed to save data to database.');
+                return false;
+            }
+        }
 
         // Utility functions
         function showMessage(type, message) {
