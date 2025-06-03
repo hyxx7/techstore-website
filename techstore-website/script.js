@@ -89,117 +89,172 @@ const translations = {
     }
 };
 
-// Laptop data with images
-const laptops = {
-    study: [
-        {
-            name: 'EcoBook Essential',
-            specs: 'Intel Core i3 • 8GB RAM • 256GB SSD • 14" Display',
-            price: '$450',
-            description: 'Perfect for students and basic office work',
-            image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'SlimPro Office',
-            specs: 'Intel Core i5 • 8GB RAM • 512GB SSD • 15.6" Display',
-            price: '$650',
-            description: 'Great for multitasking and productivity',
-            image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'UltraLight Study',
-            specs: 'AMD Ryzen 5 • 16GB RAM • 512GB SSD • 13.3" Display',
-            price: '$750',
-            description: 'Lightweight and powerful for advanced users',
-            image: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&h=300&fit=crop&crop=center'
-        }
-    ],
-    coding: [
-        {
-            name: 'DevPro Master',
-            specs: 'Intel Core i7 • 16GB RAM • 1TB SSD • 15.6" Display',
-            price: '$1200',
-            description: 'Ideal for software development and coding',
-            image: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'CodeRunner Elite',
-            specs: 'AMD Ryzen 7 • 32GB RAM • 1TB SSD • 16" Display',
-            price: '$1500',
-            description: 'Perfect for large projects and databases',
-            image: 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'FullStack Pro',
-            specs: 'Intel Core i9 • 32GB RAM • 2TB SSD • 17" Display',
-            price: '$2200',
-            description: 'Professional development powerhouse',
-            image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=300&fit=crop&crop=center'
-        }
-    ],
-    design: [
-        {
-            name: 'Creative Studio',
-            specs: 'Intel Core i7 • 32GB RAM • RTX 4060 • 1TB SSD • 15.6" 4K Display',
-            price: '$2000',
-            description: 'Perfect for graphic design and video editing',
-            image: 'https://images.unsplash.com/photo-1611078489935-0cb964de46d6?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: '3D Master Pro',
-            specs: 'Intel Core i9 • 64GB RAM • RTX 4070 • 2TB SSD • 17" 4K Display',
-            price: '$3500',
-            description: 'Professional 3D modeling and rendering',
-            image: 'https://images.unsplash.com/photo-1602080858428-57174f9431cf?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'Animation Beast',
-            specs: 'Intel Core i9 • 128GB RAM • RTX 4080 • 4TB SSD • 18" 4K Display',
-            price: '$5000',
-            description: 'Ultimate machine for animation and VFX',
-            image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&h=300&fit=crop&crop=center'
-        }
-    ],
-    gaming: [
-        {
-            name: 'GameForce Entry',
-            specs: 'Intel Core i5 • 16GB RAM • RTX 4050 • 512GB SSD • 15.6" 144Hz',
-            price: '$1100',
-            description: 'Great for casual and competitive gaming',
-            image: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'PowerGame Elite',
-            specs: 'Intel Core i7 • 32GB RAM • RTX 4070 • 1TB SSD • 17" 165Hz',
-            price: '$2200',
-            description: 'High-performance gaming and streaming',
-            image: 'https://images.unsplash.com/photo-1585394874875-31e02bc8e9c3?w=400&h=300&fit=crop&crop=center'
-        },
-        {
-            name: 'Gaming Monster',
-            specs: 'Intel Core i9 • 64GB RAM • RTX 4090 • 2TB SSD • 18" 240Hz',
-            price: '$4500',
-            description: 'Ultimate gaming experience at max settings',
-            image: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=400&h=300&fit=crop&crop=center'
-        }
-    ]
+// Database Configuration - Replace with your actual JSONBin.io credentials
+const API_CONFIG = {
+    JSONBIN_API_KEY: '$2a$10$your-api-key-here', // Replace with your JSONBin.io API key
+    LAPTOPS_BIN_ID: '64f8a9b8b89b1e2847d12345', // Replace with your laptops bin ID
+    ORDERS_BIN_ID: '64f8a9b8b89b1e2847d67890'   // Replace with your orders bin ID
 };
 
 let currentLanguage = 'en';
 let currentCategory = null;
+let laptops = {
+    study: [],
+    coding: [],
+    design: [],
+    gaming: []
+};
 
 // DOM Elements
 const modal = document.getElementById('orderModal');
 const closeBtn = document.querySelector('.close');
 const orderForm = document.getElementById('orderForm');
+const orderStatus = document.getElementById('order-status');
+const submitBtn = document.getElementById('submitOrderBtn');
 
 // Initialize the website
 document.addEventListener('DOMContentLoaded', function() {
     initializeLanguage();
     initializeEventListeners();
     showAllCategories();
-    loadLaptopsFromAdmin();
+    loadLaptopsFromAPI();
 });
+
+// Database API Functions
+async function apiRequest(url, method = 'GET', data = null) {
+    const config = {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': API_CONFIG.JSONBIN_API_KEY
+        }
+    };
+    
+    if (data) {
+        config.body = JSON.stringify(data);
+    }
+    
+    try {
+        const response = await fetch(url, config);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('API request failed:', error);
+        throw error;
+    }
+}
+
+async function loadLaptopsFromAPI() {
+    try {
+        showLoadingMessage();
+        const response = await apiRequest(`https://api.jsonbin.io/v3/b/${API_CONFIG.LAPTOPS_BIN_ID}/latest`);
+        
+        if (response && response.record) {
+            laptops = response.record;
+            displayAllCategories();
+        } else {
+            console.log('No laptops data found, using demo data');
+            loadDemoLaptops();
+        }
+    } catch (error) {
+        console.error('Failed to load laptops from API:', error);
+        loadDemoLaptops(); // Fallback to demo data
+    }
+}
+
+async function saveOrderToAPI(orderData) {
+    try {
+        // First, get existing orders
+        let existingOrders = [];
+        try {
+            const response = await apiRequest(`https://api.jsonbin.io/v3/b/${API_CONFIG.ORDERS_BIN_ID}/latest`);
+            if (response && response.record && Array.isArray(response.record)) {
+                existingOrders = response.record;
+            }
+        } catch (error) {
+            console.log('No existing orders found, creating new orders array');
+        }
+        
+        // Add new order with unique ID and timestamp
+        const newOrder = {
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            ...orderData
+        };
+        
+        existingOrders.push(newOrder);
+        
+        // Save updated orders array
+        await apiRequest(
+            `https://api.jsonbin.io/v3/b/${API_CONFIG.ORDERS_BIN_ID}`,
+            'PUT',
+            existingOrders
+        );
+        
+        return true;
+    } catch (error) {
+        console.error('Failed to save order to API:', error);
+        throw error;
+    }
+}
+
+function loadDemoLaptops() {
+    // Demo data for testing
+    laptops = {
+        study: [
+            {
+                name: "HP Pavilion 15",
+                specs: "Intel Core i5 • 8GB RAM • 256GB SSD • 15.6\" HD Display",
+                price: "$599",
+                description: "Perfect for students and office work with reliable performance.",
+                image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400"
+            },
+            {
+                name: "Lenovo IdeaPad 3",
+                specs: "AMD Ryzen 5 • 8GB RAM • 512GB SSD • 14\" FHD Display",
+                price: "$549",
+                description: "Lightweight and efficient for daily computing tasks.",
+                image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400"
+            }
+        ],
+        coding: [
+            {
+                name: "Dell XPS 13",
+                specs: "Intel Core i7 • 16GB RAM • 512GB SSD • 13.3\" 4K Display",
+                price: "$1299",
+                description: "Premium ultrabook perfect for developers and programmers.",
+                image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400"
+            }
+        ],
+        design: [
+            {
+                name: "MacBook Pro 16\"",
+                specs: "Apple M2 Pro • 32GB RAM • 1TB SSD • 16\" Retina Display",
+                price: "$2499",
+                description: "Professional-grade laptop for graphic design and video editing.",
+                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400"
+            }
+        ],
+        gaming: [
+            {
+                name: "ASUS ROG Strix",
+                specs: "Intel Core i7 • 16GB RAM • RTX 4060 • 1TB SSD • 15.6\" 144Hz Display",
+                price: "$1599",
+                description: "High-performance gaming laptop for the latest AAA games.",
+                image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400"
+            }
+        ]
+    };
+    displayAllCategories();
+}
+
+function showLoadingMessage() {
+    document.querySelectorAll('.product-grid').forEach(grid => {
+        grid.innerHTML = '<div class="no-products">Loading laptops...</div>';
+    });
+}
 
 // Language functionality
 function initializeLanguage() {
@@ -299,19 +354,33 @@ function showCategory(category) {
     }
 }
 
+function displayAllCategories() {
+    // Display products for all categories
+    Object.keys(laptops).forEach(category => {
+        displayProducts(category);
+    });
+}
+
 function displayProducts(category) {
     const productGrid = document.getElementById(`${category}-products`);
-    if (!productGrid || !laptops[category]) return;
+    if (!productGrid) return;
+    
+    const categoryLaptops = laptops[category] || [];
+    
+    if (categoryLaptops.length === 0) {
+        productGrid.innerHTML = '<div class="no-products">No products available in this category yet.</div>';
+        return;
+    }
     
     productGrid.innerHTML = '';
     
-    laptops[category].forEach(laptop => {
-        const productCard = createProductCard(laptop);
+    categoryLaptops.forEach((laptop, index) => {
+        const productCard = createProductCard(laptop, category, index);
         productGrid.appendChild(productCard);
     });
 }
 
-function createProductCard(laptop) {
+function createProductCard(laptop, category, index) {
     const card = document.createElement('div');
     card.className = 'product-card';
     
@@ -323,75 +392,98 @@ function createProductCard(laptop) {
         <div class="product-specs">${laptop.specs}</div>
         <div class="product-description">${laptop.description}</div>
         <div class="product-price">${laptop.price}</div>
-        <button class="order-btn" data-product="${laptop.name}">
-            ${translations[currentLanguage]['order-now']}
+        <button class="order-btn" onclick="openOrderModal('${laptop.name}', '${laptop.price}')">
+            <span data-key="order-now">${translations[currentLanguage]['order-now']}</span>
         </button>
     `;
-    
-    // Add order button event listener
-    const orderBtn = card.querySelector('.order-btn');
-    orderBtn.addEventListener('click', function() {
-        openOrderModal(laptop.name);
-    });
     
     return card;
 }
 
 // Modal functionality
-function openOrderModal(productName) {
-    document.getElementById('productName').value = productName;
+function openOrderModal(productName, productPrice) {
+    document.getElementById('productName').value = `${productName} - ${productPrice}`;
     modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    resetOrderStatus();
 }
 
 function closeModal() {
     modal.style.display = 'none';
-    document.body.style.overflow = 'auto'; // Restore scrolling
     orderForm.reset();
+    resetOrderStatus();
 }
 
-// Order form handling
-function handleOrderSubmission(e) {
-    e.preventDefault();
+function resetOrderStatus() {
+    orderStatus.className = 'order-status';
+    orderStatus.style.display = 'none';
+    orderStatus.textContent = '';
+    submitBtn.disabled = false;
+    submitBtn.textContent = translations[currentLanguage]['submit-order'];
+}
+
+function showOrderStatus(type, message) {
+    orderStatus.className = `order-status ${type}`;
+    orderStatus.style.display = 'block';
+    orderStatus.textContent = message;
+}
+
+// Order handling
+async function handleOrderSubmission(event) {
+    event.preventDefault();
     
-    const formData = {
-        id: Date.now(),
+    // Disable submit button and show loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    showOrderStatus('loading', 'Submitting your order...');
+    
+    // Collect form data
+    const orderData = {
         product: document.getElementById('productName').value,
         name: document.getElementById('customerName').value,
         email: document.getElementById('customerEmail').value,
         phone: document.getElementById('customerPhone').value,
         address: document.getElementById('customerAddress').value,
         notes: document.getElementById('orderNotes').value,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString(),
+        status: 'pending'
     };
     
-    // Save order for admin dashboard
-    const existingOrders = JSON.parse(localStorage.getItem('customerOrders') || '[]');
-    existingOrders.push(formData);
-    localStorage.setItem('customerOrders', JSON.stringify(existingOrders));
-    
-    // Show success message
-    alert('Order submitted successfully! We will contact you soon.');
-    
-    closeModal();
-}
-
-// Load laptops from admin dashboard
-function loadLaptopsFromAdmin() {
-    const adminLaptops = JSON.parse(localStorage.getItem('laptopsData') || 'null');
-    if (adminLaptops) {
-        // Merge with existing laptops
-        Object.keys(adminLaptops).forEach(category => {
-            if (laptops[category] && adminLaptops[category].length > 0) {
-                laptops[category] = [...laptops[category], ...adminLaptops[category]];
-            }
-        });
+    try {
+        // Save order to database
+        await saveOrderToAPI(orderData);
+        
+        // Show success message
+        showOrderStatus('success', 'Order submitted successfully! We will contact you soon.');
+        
+        // Reset form after delay
+        setTimeout(() => {
+            closeModal();
+        }, 3000);
+    } catch (error) {
+        console.error('Order submission failed:', error);
+        showOrderStatus('error', 'Failed to submit order. Please try again or contact us directly.');
+        
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = translations[currentLanguage]['submit-order'];
     }
 }
 
-// Utility function to handle image loading errors
-function handleImageError(img) {
-    img.style.display = 'none';
-    img.parentElement.style.background = 'linear-gradient(45deg, #f0f2f5, #e1e8ed)';
-    img.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 2rem;">💻</div>';
+// Utility functions for admin integration
+function getLaptopsData() {
+    return laptops;
 }
+
+function updateLaptopsData(newLaptops) {
+    laptops = newLaptops;
+    displayAllCategories();
+}
+
+// Auto-refresh laptops data every 30 seconds
+setInterval(async () => {
+    try {
+        await loadLaptopsFromAPI();
+    } catch (error) {
+        console.log('Auto-refresh failed:', error);
+    }
+}, 30000);
