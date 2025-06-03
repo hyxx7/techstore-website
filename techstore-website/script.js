@@ -52,7 +52,30 @@ const translations = {
         'order-notes': 'Order Notes (Optional)',
         'order-submit': 'Place Order',
         'footer-copyright': '© 2025 TechLaptops. All rights reserved.',
-        'add-to-cart': 'Add to Cart'
+        'add-to-cart': 'Add to Cart',
+        'admin-dashboard': 'Admin Dashboard',
+        'admin-products': 'Products',
+        'admin-orders': 'Orders',
+        'admin-add-product': 'Add Product',
+        'product-name': 'Product Name',
+        'product-category': 'Category',
+        'product-price': 'Price',
+        'product-brand': 'Brand',
+        'product-image': 'Image URL',
+        'product-description': 'Description',
+        'processor': 'Processor',
+        'ram': 'RAM',
+        'storage': 'Storage',
+        'graphics': 'Graphics Card',
+        'save': 'Save',
+        'cancel': 'Cancel',
+        'edit': 'Edit',
+        'delete': 'Delete',
+        'pending': 'Pending',
+        'processing': 'Processing',
+        'shipped': 'Shipped',
+        'delivered': 'Delivered',
+        'cancelled': 'Cancelled'
     },
     fr: {
         'store-name': 'TechOrdinateurs',
@@ -99,7 +122,30 @@ const translations = {
         'order-notes': 'Notes de Commande (Optionnel)',
         'order-submit': 'Passer la Commande',
         'footer-copyright': '© 2025 TechOrdinateurs. Tous droits réservés.',
-        'add-to-cart': 'Ajouter au Panier'
+        'add-to-cart': 'Ajouter au Panier',
+        'admin-dashboard': 'Tableau de Bord Admin',
+        'admin-products': 'Produits',
+        'admin-orders': 'Commandes',
+        'admin-add-product': 'Ajouter Produit',
+        'product-name': 'Nom du Produit',
+        'product-category': 'Catégorie',
+        'product-price': 'Prix',
+        'product-brand': 'Marque',
+        'product-image': 'URL de l\'Image',
+        'product-description': 'Description',
+        'processor': 'Processeur',
+        'ram': 'RAM',
+        'storage': 'Stockage',
+        'graphics': 'Carte Graphique',
+        'save': 'Sauvegarder',
+        'cancel': 'Annuler',
+        'edit': 'Modifier',
+        'delete': 'Supprimer',
+        'pending': 'En Attente',
+        'processing': 'En Cours',
+        'shipped': 'Expédié',
+        'delivered': 'Livré',
+        'cancelled': 'Annulé'
     },
     ar: {
         'store-name': 'تكنولاب',
@@ -146,11 +192,34 @@ const translations = {
         'order-notes': 'ملاحظات الطلب (اختياري)',
         'order-submit': 'تقديم الطلب',
         'footer-copyright': '© 2025 تكنولاب. جميع الحقوق محفوظة.',
-        'add-to-cart': 'أضف للسلة'
+        'add-to-cart': 'أضف للسلة',
+        'admin-dashboard': 'لوحة التحكم',
+        'admin-products': 'المنتجات',
+        'admin-orders': 'الطلبات',
+        'admin-add-product': 'إضافة منتج',
+        'product-name': 'اسم المنتج',
+        'product-category': 'الفئة',
+        'product-price': 'السعر',
+        'product-brand': 'الماركة',
+        'product-image': 'رابط الصورة',
+        'product-description': 'الوصف',
+        'processor': 'المعالج',
+        'ram': 'الذاكرة',
+        'storage': 'التخزين',
+        'graphics': 'كرت الرسوميات',
+        'save': 'حفظ',
+        'cancel': 'إلغاء',
+        'edit': 'تعديل',
+        'delete': 'حذف',
+        'pending': 'قيد الانتظار',
+        'processing': 'قيد المعالجة',
+        'shipped': 'تم الشحن',
+        'delivered': 'تم التسليم',
+        'cancelled': 'ملغي'
     }
 };
 
-// Sample products data - Enhanced with more products
+// Sample products data
 const sampleProducts = [
     {
         id: 1,
@@ -338,43 +407,15 @@ const sampleProducts = [
     }
 ];
 
-// Initialize data
+// Initialize data - Using variables instead of localStorage for online compatibility
 function initializeData() {
-    // Load data from localStorage if available
-    const savedProducts = localStorage.getItem('products');
-    const savedCart = localStorage.getItem('cart');
-    const savedOrders = localStorage.getItem('orders');
-    
-    if (savedProducts) {
-        products = JSON.parse(savedProducts);
-    } else {
+    // Initialize with sample data if empty
+    if (products.length === 0) {
         products = [...sampleProducts];
-        saveProducts();
-    }
-    
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    }
-    
-    if (savedOrders) {
-        orders = JSON.parse(savedOrders);
     }
     
     updateCartUI();
     displayProducts();
-}
-
-// Save functions
-function saveProducts() {
-    localStorage.setItem('products', JSON.stringify(products));
-}
-
-function saveCart() {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function saveOrders() {
-    localStorage.setItem('orders', JSON.stringify(orders));
 }
 
 // Language functions
@@ -387,13 +428,15 @@ function changeLanguage() {
     if (currentLanguage === 'ar') {
         html.setAttribute('dir', 'rtl');
         html.setAttribute('lang', 'ar');
+        document.body.classList.add('rtl');
     } else {
         html.setAttribute('dir', 'ltr');
         html.setAttribute('lang', currentLanguage);
+        document.body.classList.remove('rtl');
     }
     
     updateTexts();
-    displayProducts(); // Refresh products to show in new language
+    displayProducts();
 }
 
 function updateTexts() {
@@ -460,7 +503,10 @@ function filterCategory(category) {
 }
 
 function scrollToProducts() {
-    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 // Cart functions
@@ -482,16 +528,12 @@ function addToCart(productId) {
         });
     }
     
-    saveCart();
     updateCartUI();
-    
-    // Show feedback
     showNotification('Product added to cart!');
 }
 
 function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
-    saveCart();
     updateCartUI();
     displayCart();
 }
@@ -503,7 +545,6 @@ function updateQuantity(productId, quantity) {
             removeFromCart(productId);
         } else {
             item.quantity = quantity;
-            saveCart();
             updateCartUI();
             displayCart();
         }
@@ -590,11 +631,9 @@ function submitOrder(event) {
     };
     
     orders.push(orderData);
-    saveOrders();
     
     // Clear cart
     cart = [];
-    saveCart();
     updateCartUI();
     
     // Close modal
@@ -605,6 +644,9 @@ function submitOrder(event) {
     
     // Reset form
     document.getElementById('orderForm').reset();
+    
+    // Send order notification (you can integrate with email service)
+    console.log('New Order:', orderData);
 }
 
 // Admin functions
@@ -612,13 +654,13 @@ function loadAdminData() {
     updateDashboardStats();
     loadAdminProducts();
     loadAdminOrders();
-    displayRecentOrders();
 }
 
 function updateDashboardStats() {
     const totalProducts = document.getElementById('totalProducts');
     const totalOrders = document.getElementById('totalOrders');
     const pendingOrders = document.getElementById('pendingOrders');
+    const revenue = document.getElementById('revenue');
     
     if (totalProducts) totalProducts.textContent = products.length;
     if (totalOrders) totalOrders.textContent = orders.length;
@@ -626,54 +668,272 @@ function updateDashboardStats() {
         const pending = orders.filter(order => order.status === 'pending').length;
         pendingOrders.textContent = pending;
     }
+    if (revenue) {
+        const totalRevenue = orders
+            .filter(order => order.status !== 'cancelled')
+            .reduce((sum, order) => sum + order.total, 0);
+        revenue.textContent = totalRevenue.toFixed(2);
+    }
 }
 
 function loadAdminProducts() {
-    const container = document.getElementById('adminProductsList');
-    if (!container) return;
+    const tbody = document.getElementById('adminProductsTable');
+    if (!tbody) return;
     
-    container.innerHTML = products.map(product => `
-        <div class="admin-product-card">
-            <img src="${product.image}" alt="${product.name.en}">
-            <div class="admin-product-info">
-                <h3>${product.name.en}</h3>
-                <p>Category: ${product.category}</p>
-                <p>Price: $${product.price}</p>
-                <p>Brand: ${product.brand}</p>
-                <div class="admin-product-actions">
-                    <button onclick="editProduct(${product.id})" class="edit-btn">Edit</button>
-                    <button onclick="deleteProduct(${product.id})" class="delete-btn">Delete</button>
-                </div>
-            </div>
-        </div>
+    tbody.innerHTML = products.map(product => `
+        <tr>
+            <td>${product.id}</td>
+            <td>${product.name.en}</td>
+            <td>${product.category}</td>
+            <td>$${product.price}</td>
+            <td>${product.brand}</td>
+            <td>
+                <button onclick="editProduct(${product.id})" class="btn-edit">${getText('edit')}</button>
+                <button onclick="deleteProduct(${product.id})" class="btn-delete">${getText('delete')}</button>
+            </td>
+        </tr>
     `).join('');
 }
 
 function loadAdminOrders() {
-    const container = document.getElementById('ordersList');
-    if (!container) return;
+    const tbody = document.getElementById('adminOrdersTable');
+    if (!tbody) return;
     
-    const filteredOrders = getFilteredOrders();
+    tbody.innerHTML = orders.map(order => `
+        <tr>
+            <td>#${order.id}</td>
+            <td>${order.customerName}</td>
+            <td>${order.customerEmail}</td>
+            <td>$${order.total.toFixed(2)}</td>
+            <td>
+                <select onchange="updateOrderStatus(${order.id}, this.value)" class="status-select">
+                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>${getText('pending')}</option>
+                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>${getText('processing')}</option>
+                    <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>${getText('shipped')}</option>
+                    <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>${getText('delivered')}</option>
+                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>${getText('cancelled')}</option>
+                </select>
+            </td>
+            <td>${new Date(order.date).toLocaleDateString()}</td>
+            <td>
+                <button onclick="viewOrderDetails(${order.id})" class="btn-view">View</button>
+                <button onclick="deleteOrder(${order.id})" class="btn-delete">${getText('delete')}</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updateOrderStatus(orderId, newStatus) {
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+        order.status = newStatus;
+        showNotification('Order status updated successfully!');
+        updateDashboardStats();
+    }
+}
+
+function viewOrderDetails(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
     
-    container.innerHTML = filteredOrders.map(order => `
-        <div class="order-card">
-            <div class="order-header">
-                <h3>Order #${order.id}</h3>
-                <span class="order-status status-${order.status}">${order.status}</span>
-            </div>
-            <div class="order-details">
-                <p><strong>Customer:</strong> ${order.customerName}</p>
-                <p><strong>Email:</strong> ${order.customerEmail}</p>
-                <p><strong>Phone:</strong> ${order.customerPhone}</p>
-                <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
-                <p><strong>Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
-                <div class="order-items">
-                    <strong>Items:</strong>
-                    ${order.items.map(item => `
-                        <div class="order-item">
-                            ${item.name.en} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="order-actions">
-                    <select onchange="updateOrderStatus(${order.i
+    const details = `
+        Order ID: #${order.id}
+        Customer: ${order.customerName}
+        Email: ${order.customerEmail}
+        Phone: ${order.customerPhone}
+        Address: ${order.customerAddress}
+        Status: ${order.status}
+        Date: ${new Date(order.date).toLocaleString()}
+        
+        Items:
+        ${order.items.map(item => `- ${item.name.en} x${item.quantity} ($${item.price})`).join('\n')}
+        
+        Total: $${order.total.toFixed(2)}
+        
+        Notes: ${order.orderNotes || 'None'}
+    `;
+    
+    alert(details);
+}
+
+function deleteOrder(orderId) {
+    if (confirm('Are you sure you want to delete this order?')) {
+        orders = orders.filter(o => o.id !== orderId);
+        loadAdminOrders();
+        updateDashboardStats();
+        showNotification('Order deleted successfully!');
+    }
+}
+
+// Product management functions
+function showAddProductForm() {
+    document.getElementById('productModal').style.display = 'block';
+    document.getElementById('productForm').reset();
+    document.getElementById('productId').value = '';
+    document.getElementById('modalTitle').textContent = getText('admin-add-product');
+}
+
+function closeProductModal() {
+    document.getElementById('productModal').style.display = 'none';
+}
+
+function editProduct(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    document.getElementById('productModal').style.display = 'block';
+    document.getElementById('modalTitle').textContent = getText('edit') + ' Product';
+    
+    // Fill form with product data
+    document.getElementById('productId').value = product.id;
+    document.getElementById('productName').value = product.name.en;
+    document.getElementById('productCategory').value = product.category;
+    document.getElementById('productPrice').value = product.price;
+    document.getElementById('productBrand').value = product.brand;
+    document.getElementById('productImage').value = product.image;
+    document.getElementById('productDescription').value = product.description.en;
+    document.getElementById('productProcessor').value = product.specs.processor;
+    document.getElementById('productRam').value = product.specs.ram;
+    document.getElementById('productStorage').value = product.specs.storage;
+    document.getElementById('productGraphics').value = product.specs.graphics;
+}
+
+function saveProduct(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const productId = formData.get('productId');
+    
+    const productData = {
+        id: productId ? parseInt(productId) : Date.now(),
+        name: {
+            en: formData.get('productName'),
+            fr: formData.get('productName'), // For simplicity, using English for all languages
+            ar: formData.get('productName')
+        },
+        category: formData.get('productCategory'),
+        price: parseFloat(formData.get('productPrice')),
+        brand: formData.get('productBrand'),
+        image: formData.get('productImage'),
+        description: {
+            en: formData.get('productDescription'),
+            fr: formData.get('productDescription'),
+            ar: formData.get('productDescription')
+        },
+        specs: {
+            processor: formData.get('productProcessor'),
+            ram: formData.get('productRam'),
+            storage: formData.get('productStorage'),
+            graphics: formData.get('productGraphics')
+        }
+    };
+    
+    if (productId) {
+        // Update existing product
+        const index = products.findIndex(p => p.id === parseInt(productId));
+        if (index !== -1) {
+            products[index] = productData;
+            showNotification('Product updated successfully!');
+        }
+    } else {
+        // Add new product
+        products.push(productData);
+        showNotification('Product added successfully!');
+    }
+    
+    closeProductModal();
+    loadAdminProducts();
+    updateDashboardStats();
+    displayProducts();
+}
+
+function deleteProduct(productId) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        products = products.filter(p => p.id !== productId);
+        loadAdminProducts();
+        updateDashboardStats();
+        displayProducts();
+        showNotification('Product deleted successfully!');
+    }
+}
+
+// Navigation functions
+function showSection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => section.style.display = 'none');
+    
+    // Show selected section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+    }
+    
+    // Update navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+    
+    // Load admin data if admin section is shown
+    if (sectionId === 'admin') {
+        loadAdminData();
+    }
+}
+
+// Utility functions
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Hide and remove notification
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const cartModal = document.getElementById('cartModal');
+    const orderModal = document.getElementById('orderModal');
+    const productModal = document.getElementById('productModal');
+    
+    if (event.target === cartModal) {
+        cartModal.style.display = 'none';
+    }
+    if (event.target === orderModal) {
+        orderModal.style.display = 'none';
+    }
+    if (event.target === productModal) {
+        productModal.style.display = 'none';
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    initializeData();
+    updateTexts();
+    
+    // Set default language select
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = currentLanguage;
+    }
+    
+    // Show home section by default
+    showSection('home');
+});
