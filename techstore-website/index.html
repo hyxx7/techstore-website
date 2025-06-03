@@ -57,28 +57,36 @@
         <section id="products-study" class="products">
             <div class="container">
                 <h2 data-key="study-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Study & Office Laptops</h2>
-                <div class="product-grid" id="study-products"></div>
+                <div class="product-grid" id="study-products">
+                    <div class="no-products">No products available in this category yet.</div>
+                </div>
             </div>
         </section>
 
         <section id="products-coding" class="products">
             <div class="container">
                 <h2 data-key="coding-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Programming Laptops</h2>
-                <div class="product-grid" id="coding-products"></div>
+                <div class="product-grid" id="coding-products">
+                    <div class="no-products">No products available in this category yet.</div>
+                </div>
             </div>
         </section>
 
         <section id="products-design" class="products">
             <div class="container">
                 <h2 data-key="design-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Design & 3D Laptops</h2>
-                <div class="product-grid" id="design-products"></div>
+                <div class="product-grid" id="design-products">
+                    <div class="no-products">No products available in this category yet.</div>
+                </div>
             </div>
         </section>
 
         <section id="products-gaming" class="products">
             <div class="container">
                 <h2 data-key="gaming-laptops-title" style="text-align: center; color: #333; margin-bottom: 1rem;">Gaming Laptops</h2>
-                <div class="product-grid" id="gaming-products"></div>
+                <div class="product-grid" id="gaming-products">
+                    <div class="no-products">No products available in this category yet.</div>
+                </div>
             </div>
         </section>
 
@@ -103,6 +111,7 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 data-key="order-title">Order Laptop</h2>
+            <div id="order-status" class="order-status"></div>
             <form id="orderForm">
                 <div class="form-group">
                     <label data-key="product-label">Product:</label>
@@ -128,7 +137,7 @@
                     <label data-key="notes-label">Additional Notes:</label>
                     <textarea id="orderNotes" rows="2"></textarea>
                 </div>
-                <button type="submit" class="submit-btn" data-key="submit-order">Submit Order</button>
+                <button type="submit" class="submit-btn" data-key="submit-order" id="submitOrderBtn">Submit Order</button>
             </form>
         </div>
     </div>
