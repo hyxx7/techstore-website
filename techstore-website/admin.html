@@ -78,6 +78,31 @@
             display: block;
         }
 
+        .api-setup {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .api-setup h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .api-setup p {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .api-setup code {
+            background: #f8f9fa;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
         .form-section {
             background: #f8f9fa;
             padding: 2rem;
@@ -149,6 +174,12 @@
         .btn-danger:hover {
             background: #c0392b;
             transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .laptops-grid {
@@ -284,13 +315,39 @@
             font-weight: 500;
         }
 
-        .success-message {
-            background: #d4edda;
-            color: #155724;
+        .success-message, .error-message, .loading-message {
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 1rem;
             display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .refresh-btn {
+            background: #28a745;
+            color: white;
+            margin-left: 1rem;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
         }
 
         @media (max-width: 768px) {
@@ -316,19 +373,40 @@
         </div>
 
         <div class="admin-content">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
-                <button class="tab-btn" data-tab="add-laptop">➕ Add Laptop</button>
-                <button class="tab-btn" data-tab="manage-laptops">💻 Manage Laptops</button>
-                <button class="tab-btn" data-tab="orders">📦 Orders</button>
+            <!-- API Setup Instructions -->
+            <div class="api-setup">
+                <h3>⚠️ Database Setup Required</h3>
+                <p><strong>To use this admin panel, you need to set up a JSONBin.io account:</strong></p>
+                <p>1. Go to <code>https://jsonbin.io</code> and create a free account</p>
+                <p>2. Create a new bin for your laptop inventory</p>
+                <p>3. Copy your Bin ID and API Key from your account settings</p>
+                <p>4. Update the JavaScript variables below with your credentials</p>
             </div>
+
+            <!-- Navigation Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('dashboard')">Dashboard</button>
+                <button class="tab-btn" onclick="showTab('inventory')">Inventory</button>
+                <button class="tab-btn" onclick="showTab('add-laptop')">Add Laptop</button>
+                <button class="tab-btn" onclick="showTab('orders')">Orders</button>
+            </div>
+
+            <!-- Messages -->
+            <div id="success-message" class="success-message"></div>
+            <div id="error-message" class="error-message"></div>
+            <div id="loading-message" class="loading-message"></div>
 
             <!-- Dashboard Tab -->
             <div id="dashboard" class="tab-content active">
+                <h2>📊 Dashboard Overview</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-number" id="total-laptops">0</div>
                         <div class="stat-label">Total Laptops</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="in-stock">0</div>
+                        <div class="stat-label">In Stock</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="total-orders">0</div>
@@ -338,20 +416,23 @@
                         <div class="stat-number" id="pending-orders">0</div>
                         <div class="stat-label">Pending Orders</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="revenue">$0</div>
-                        <div class="stat-label">Revenue</div>
-                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventory" class="tab-content">
+                <h2>💻 Laptop Inventory 
+                    <button class="btn refresh-btn btn-small" onclick="loadLaptops()">🔄 Refresh</button>
+                </h2>
+                <div id="laptops-container" class="laptops-grid">
+                    <!-- Laptops will be loaded here -->
                 </div>
             </div>
 
             <!-- Add Laptop Tab -->
             <div id="add-laptop" class="tab-content">
+                <h2>➕ Add New Laptop</h2>
                 <div class="form-section">
-                    <h2>Add New Laptop</h2>
-                    <div class="success-message" id="success-message">
-                        Laptop added successfully!
-                    </div>
                     <form id="laptop-form">
                         <div class="form-grid">
                             <div class="form-group">
@@ -359,46 +440,53 @@
                                 <input type="text" id="laptop-name" required>
                             </div>
                             <div class="form-group">
-                                <label for="laptop-category">Category</label>
-                                <select id="laptop-category" required>
-                                    <option value="">Select Category</option>
-                                    <option value="study">Study & Office</option>
-                                    <option value="coding">Programming</option>
-                                    <option value="design">Design & 3D</option>
-                                    <option value="gaming">Gaming</option>
+                                <label for="laptop-brand">Brand</label>
+                                <select id="laptop-brand" required>
+                                    <option value="">Select Brand</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Dell">Dell</option>
+                                    <option value="HP">HP</option>
+                                    <option value="Lenovo">Lenovo</option>
+                                    <option value="Asus">Asus</option>
+                                    <option value="Acer">Acer</option>
+                                    <option value="MSI">MSI</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="laptop-processor">Processor</label>
-                                <input type="text" id="laptop-processor" placeholder="e.g., Intel Core i7" required>
+                                <input type="text" id="laptop-processor" required>
                             </div>
                             <div class="form-group">
-                                <label for="laptop-ram">RAM</label>
-                                <input type="text" id="laptop-ram" placeholder="e.g., 16GB" required>
+                                <label for="laptop-ram">RAM (GB)</label>
+                                <select id="laptop-ram" required>
+                                    <option value="">Select RAM</option>
+                                    <option value="4">4 GB</option>
+                                    <option value="8">8 GB</option>
+                                    <option value="16">16 GB</option>
+                                    <option value="32">32 GB</option>
+                                    <option value="64">64 GB</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="laptop-storage">Storage</label>
                                 <input type="text" id="laptop-storage" placeholder="e.g., 512GB SSD" required>
                             </div>
                             <div class="form-group">
-                                <label for="laptop-display">Display</label>
-                                <input type="text" id="laptop-display" placeholder="e.g., 15.6\" FHD" required>
+                                <label for="laptop-price">Price ($)</label>
+                                <input type="number" id="laptop-price" step="0.01" required>
                             </div>
                             <div class="form-group">
-                                <label for="laptop-graphics">Graphics (Optional)</label>
-                                <input type="text" id="laptop-graphics" placeholder="e.g., RTX 4060">
+                                <label for="laptop-stock">Stock Quantity</label>
+                                <input type="number" id="laptop-stock" min="0" required>
                             </div>
                             <div class="form-group">
-                                <label for="laptop-price">Price</label>
-                                <input type="text" id="laptop-price" placeholder="e.g., $1200" required>
+                                <label for="laptop-image">Image URL</label>
+                                <input type="url" id="laptop-image" placeholder="https://...">
                             </div>
                             <div class="form-group full-width">
                                 <label for="laptop-description">Description</label>
-                                <textarea id="laptop-description" rows="3" placeholder="Brief description of the laptop" required></textarea>
-                            </div>
-                            <div class="form-group full-width">
-                                <label for="laptop-image">Image URL</label>
-                                <input type="url" id="laptop-image" placeholder="https://example.com/image.jpg" required>
+                                <textarea id="laptop-description" rows="3" placeholder="Enter laptop description..."></textarea>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Laptop</button>
@@ -406,30 +494,26 @@
                 </div>
             </div>
 
-            <!-- Manage Laptops Tab -->
-            <div id="manage-laptops" class="tab-content">
-                <h2>Manage Laptops</h2>
-                <div class="laptops-grid" id="laptops-grid">
-                    <!-- Laptops will be displayed here -->
-                </div>
-            </div>
-
             <!-- Orders Tab -->
             <div id="orders" class="tab-content">
-                <h2>Customer Orders</h2>
-                <table class="orders-table" id="orders-table">
+                <h2>📦 Order Management 
+                    <button class="btn refresh-btn btn-small" onclick="loadOrders()">🔄 Refresh</button>
+                </h2>
+                <table class="orders-table">
                     <thead>
                         <tr>
                             <th>Order ID</th>
                             <th>Customer</th>
-                            <th>Product</th>
-                            <th>Date</th>
+                            <th>Laptop</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
                             <th>Status</th>
+                            <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="orders-tbody">
-                        <!-- Orders will be displayed here -->
+                    <tbody id="orders-table-body">
+                        <!-- Orders will be loaded here -->
                     </tbody>
                 </table>
             </div>
@@ -437,212 +521,261 @@
     </div>
 
     <script>
-        // Admin data storage (in a real app, this would be a database)
-        let adminData = {
-            laptops: JSON.parse(localStorage.getItem('adminLaptops')) || [],
-            orders: JSON.parse(localStorage.getItem('adminOrders')) || []
-        };
+        // Configuration - Update these with your JSONBin.io credentials
+        const API_KEY = 'YOUR_JSONBIN_API_KEY';
+        const BIN_ID = 'YOUR_BIN_ID';
+        const BASE_URL = 'https://api.jsonbin.io/v3/b/';
 
-        // Initialize admin dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeAdmin();
-            syncWithMainSite();
-        });
+        // In-memory storage for demo purposes
+        let laptops = [
+            {
+                id: 1,
+                name: 'MacBook Pro 14"',
+                brand: 'Apple',
+                processor: 'M3 Pro',
+                ram: '16',
+                storage: '512GB SSD',
+                price: 2399.99,
+                stock: 5,
+                image: 'https://via.placeholder.com/300x200/667eea/ffffff?text=MacBook+Pro',
+                description: 'Powerful laptop for professionals with M3 Pro chip'
+            },
+            {
+                id: 2,
+                name: 'Dell XPS 13',
+                brand: 'Dell',
+                processor: 'Intel i7-13700H',
+                ram: '16',
+                storage: '1TB SSD',
+                price: 1699.99,
+                stock: 8,
+                image: 'https://via.placeholder.com/300x200/764ba2/ffffff?text=Dell+XPS+13',
+                description: 'Premium ultrabook with excellent display'
+            },
+            {
+                id: 3,
+                name: 'ThinkPad X1 Carbon',
+                brand: 'Lenovo',
+                processor: 'Intel i5-13500U',
+                ram: '8',
+                storage: '256GB SSD',
+                price: 1299.99,
+                stock: 12,
+                image: 'https://via.placeholder.com/300x200/333333/ffffff?text=ThinkPad+X1',
+                description: 'Business laptop with excellent keyboard'
+            }
+        ];
 
-        function initializeAdmin() {
-            setupTabNavigation();
-            setupLaptopForm();
-            updateDashboard();
-            displayLaptops();
-            displayOrders();
-        }
+        let orders = [
+            {
+                id: 'ORD-001',
+                customer: 'John Doe',
+                laptop: 'MacBook Pro 14"',
+                quantity: 1,
+                total: 2399.99,
+                status: 'pending',
+                date: '2025-06-01'
+            },
+            {
+                id: 'ORD-002',
+                customer: 'Jane Smith',
+                laptop: 'Dell XPS 13',
+                quantity: 2,
+                total: 3399.98,
+                status: 'completed',
+                date: '2025-05-30'
+            }
+        ];
 
-        function setupTabNavigation() {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Update active tab button
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Show active tab content
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-        }
-
-        function setupLaptopForm() {
-            document.getElementById('laptop-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                addLaptop();
-            });
-        }
-
-        function addLaptop() {
-            const laptop = {
-                id: Date.now(),
-                name: document.getElementById('laptop-name').value,
-                category: document.getElementById('laptop-category').value,
-                processor: document.getElementById('laptop-processor').value,
-                ram: document.getElementById('laptop-ram').value,
-                storage: document.getElementById('laptop-storage').value,
-                display: document.getElementById('laptop-display').value,
-                graphics: document.getElementById('laptop-graphics').value,
-                price: document.getElementById('laptop-price').value,
-                description: document.getElementById('laptop-description').value,
-                image: document.getElementById('laptop-image').value,
-                specs: generateSpecs()
-            };
-
-            adminData.laptops.push(laptop);
-            saveAdminData();
-            syncWithMainSite();
-            
-            // Show success message
-            document.getElementById('success-message').style.display = 'block';
+        // Utility functions
+        function showMessage(type, message) {
+            const messageEl = document.getElementById(`${type}-message`);
+            messageEl.textContent = message;
+            messageEl.style.display = 'block';
             setTimeout(() => {
-                document.getElementById('success-message').style.display = 'none';
-            }, 3000);
-            
-            // Reset form
-            document.getElementById('laptop-form').reset();
-            
-            // Update displays
-            updateDashboard();
-            displayLaptops();
+                messageEl.style.display = 'none';
+            }, 5000);
         }
 
-        function generateSpecs() {
-            const processor = document.getElementById('laptop-processor').value;
-            const ram = document.getElementById('laptop-ram').value;
-            const storage = document.getElementById('laptop-storage').value;
-            const display = document.getElementById('laptop-display').value;
-            const graphics = document.getElementById('laptop-graphics').value;
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            let specs = `${processor} • ${ram} RAM • ${storage} • ${display} Display`;
-            if (graphics) {
-                specs = `${processor} • ${ram} RAM • ${graphics} • ${storage} • ${display} Display`;
-            }
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
             
-            return specs;
-        }
-
-        function deleteLaptop(id) {
-            if (confirm('Are you sure you want to delete this laptop?')) {
-                adminData.laptops = adminData.laptops.filter(laptop => laptop.id !== id);
-                saveAdminData();
-                syncWithMainSite();
-                displayLaptops();
-                updateDashboard();
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load data for specific tabs
+            if (tabName === 'dashboard') {
+                updateDashboardStats();
+            } else if (tabName === 'inventory') {
+                loadLaptops();
+            } else if (tabName === 'orders') {
+                loadOrders();
             }
         }
 
-        function displayLaptops() {
-            const grid = document.getElementById('laptops-grid');
-            grid.innerHTML = '';
+        function updateDashboardStats() {
+            document.getElementById('total-laptops').textContent = laptops.length;
+            document.getElementById('in-stock').textContent = laptops.filter(l => l.stock > 0).length;
+            document.getElementById('total-orders').textContent = orders.length;
+            document.getElementById('pending-orders').textContent = orders.filter(o => o.status === 'pending').length;
+        }
+
+        function loadLaptops() {
+            const container = document.getElementById('laptops-container');
+            container.innerHTML = '';
             
-            adminData.laptops.forEach(laptop => {
-                const card = document.createElement('div');
-                card.className = 'laptop-card';
-                card.innerHTML = `
+            laptops.forEach(laptop => {
+                const laptopCard = document.createElement('div');
+                laptopCard.className = 'laptop-card';
+                laptopCard.innerHTML = `
                     <div class="laptop-image">
-                        <img src="${laptop.image}" alt="${laptop.name}" onerror="this.style.display='none'">
+                        <img src="${laptop.image}" alt="${laptop.name}" onerror="this.src='https://via.placeholder.com/300x200/f0f2f5/999999?text=No+Image'">
                     </div>
                     <div class="laptop-info">
                         <h3>${laptop.name}</h3>
-                        <p><strong>Category:</strong> ${laptop.category}</p>
-                        <p><strong>Specs:</strong> ${laptop.specs}</p>
+                        <p><strong>Brand:</strong> ${laptop.brand}</p>
+                        <p><strong>Processor:</strong> ${laptop.processor}</p>
+                        <p><strong>RAM:</strong> ${laptop.ram}GB | <strong>Storage:</strong> ${laptop.storage}</p>
+                        <p><strong>Stock:</strong> ${laptop.stock} units</p>
+                        <div class="laptop-price">$${laptop.price.toFixed(2)}</div>
                         <p>${laptop.description}</p>
-                        <div class="laptop-price">${laptop.price}</div>
-                        <div class="laptop-actions">
-                            <button class="btn btn-danger btn-small" onclick="deleteLaptop(${laptop.id})">Delete</button>
-                        </div>
+                    </div>
+                    <div class="laptop-actions">
+                        <button class="btn btn-primary btn-small" onclick="editLaptop(${laptop.id})">Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteLaptop(${laptop.id})">Delete</button>
                     </div>
                 `;
-                grid.appendChild(card);
+                container.appendChild(laptopCard);
             });
         }
 
-        function displayOrders() {
-            const tbody = document.getElementById('orders-tbody');
+        function loadOrders() {
+            const tbody = document.getElementById('orders-table-body');
             tbody.innerHTML = '';
             
-            adminData.orders.forEach((order, index) => {
+            orders.forEach(order => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>#${order.id || (1000 + index)}</td>
-                    <td>${order.name}</td>
-                    <td>${order.product}</td>
-                    <td>${order.date || new Date().toLocaleDateString()}</td>
-                    <td><span class="order-status status-pending">Pending</span></td>
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${order.laptop}</td>
+                    <td>${order.quantity}</td>
+                    <td>$${order.total.toFixed(2)}</td>
+                    <td><span class="order-status status-${order.status}">${order.status.toUpperCase()}</span></td>
+                    <td>${order.date}</td>
                     <td>
-                        <button class="btn btn-primary btn-small" onclick="viewOrder(${index})">View</button>
+                        <button class="btn btn-primary btn-small" onclick="updateOrderStatus('${order.id}')">
+                            ${order.status === 'pending' ? 'Complete' : 'Pending'}
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        function viewOrder(index) {
-            const order = adminData.orders[index];
-            alert(`Order Details:\n\nCustomer: ${order.name}\nEmail: ${order.email}\nPhone: ${order.phone}\nProduct: ${order.product}\nAddress: ${order.address}\nNotes: ${order.notes || 'None'}`);
+        function addLaptop(laptopData) {
+            const newId = Math.max(...laptops.map(l => l.id)) + 1;
+            const newLaptop = {
+                id: newId,
+                ...laptopData
+            };
+            laptops.push(newLaptop);
+            showMessage('success', 'Laptop added successfully!');
+            loadLaptops();
+            updateDashboardStats();
         }
 
-        function updateDashboard() {
-            document.getElementById('total-laptops').textContent = adminData.laptops.length;
-            document.getElementById('total-orders').textContent = adminData.orders.length;
-            document.getElementById('pending-orders').textContent = adminData.orders.length;
+        function editLaptop(id) {
+            const laptop = laptops.find(l => l.id === id);
+            if (laptop) {
+                // Fill form with laptop data for editing
+                document.getElementById('laptop-name').value = laptop.name;
+                document.getElementById('laptop-brand').value = laptop.brand;
+                document.getElementById('laptop-processor').value = laptop.processor;
+                document.getElementById('laptop-ram').value = laptop.ram;
+                document.getElementById('laptop-storage').value = laptop.storage;
+                document.getElementById('laptop-price').value = laptop.price;
+                document.getElementById('laptop-stock').value = laptop.stock;
+                document.getElementById('laptop-image').value = laptop.image;
+                document.getElementById('laptop-description').value = laptop.description;
+                
+                // Switch to add laptop tab
+                showTab('add-laptop');
+                
+                // Change form behavior to edit mode
+                const form = document.getElementById('laptop-form');
+                form.dataset.editId = id;
+                form.querySelector('button[type="submit"]').textContent = 'Update Laptop';
+            }
+        }
+
+        function deleteLaptop(id) {
+            if (confirm('Are you sure you want to delete this laptop?')) {
+                laptops = laptops.filter(l => l.id !== id);
+                showMessage('success', 'Laptop deleted successfully!');
+                loadLaptops();
+                updateDashboardStats();
+            }
+        }
+
+        function updateOrderStatus(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = order.status === 'pending' ? 'completed' : 'pending';
+                showMessage('success', `Order ${orderId} status updated!`);
+                loadOrders();
+                updateDashboardStats();
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('laptop-form').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Calculate revenue (simple estimation)
-            const revenue = adminData.orders.length * 1000; // Assume average $1000 per order
-            document.getElementById('revenue').textContent = `$${revenue.toLocaleString()}`;
-        }
-
-        function saveAdminData() {
-            localStorage.setItem('adminLaptops', JSON.stringify(adminData.laptops));
-            localStorage.setItem('adminOrders', JSON.stringify(adminData.orders));
-        }
-
-        function syncWithMainSite() {
-            // Convert admin laptop format to main site format
-            const laptopsByCategory = {
-                study: [],
-                coding: [],
-                design: [],
-                gaming: []
+            const formData = {
+                name: document.getElementById('laptop-name').value,
+                brand: document.getElementById('laptop-brand').value,
+                processor: document.getElementById('laptop-processor').value,
+                ram: document.getElementById('laptop-ram').value,
+                storage: document.getElementById('laptop-storage').value,
+                price: parseFloat(document.getElementById('laptop-price').value),
+                stock: parseInt(document.getElementById('laptop-stock').value),
+                image: document.getElementById('laptop-image').value || 'https://via.placeholder.com/300x200/f0f2f5/999999?text=No+Image',
+                description: document.getElementById('laptop-description').value
             };
             
-            adminData.laptops.forEach(laptop => {
-                if (laptopsByCategory[laptop.category]) {
-                    laptopsByCategory[laptop.category].push({
-                        name: laptop.name,
-                        specs: laptop.specs,
-                        price: laptop.price,
-                        description: laptop.description,
-                        image: laptop.image
-                    });
+            const editId = this.dataset.editId;
+            if (editId) {
+                // Edit existing laptop
+                const laptopIndex = laptops.findIndex(l => l.id === parseInt(editId));
+                if (laptopIndex !== -1) {
+                    laptops[laptopIndex] = { ...laptops[laptopIndex], ...formData };
+                    showMessage('success', 'Laptop updated successfully!');
                 }
-            });
+                delete this.dataset.editId;
+                this.querySelector('button[type="submit"]').textContent = 'Add Laptop';
+            } else {
+                // Add new laptop
+                addLaptop(formData);
+            }
             
-            // Save to localStorage for main site to use
-            localStorage.setItem('laptopsData', JSON.stringify(laptopsByCategory));
-        }
+            this.reset();
+        });
 
-        // Load orders from main site
-        function loadOrdersFromMainSite() {
-            const mainSiteOrders = JSON.parse(localStorage.getItem('customerOrders') || '[]');
-            adminData.orders = [...adminData.orders, ...mainSiteOrders];
-            // Clear main site orders after loading
-            localStorage.removeItem('customerOrders');
-            saveAdminData();
-        }
-
-        // Check for new orders periodically
-        setInterval(loadOrdersFromMainSite, 5000);
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboardStats();
+            loadLaptops();
+        });
     </script>
 </body>
 </html>
