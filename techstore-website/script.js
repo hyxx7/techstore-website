@@ -1,489 +1,679 @@
-// Translation data
+// Global variables
+let currentLanguage = 'en';
+let products = [];
+let cart = [];
+let orders = [];
+let currentFilter = 'all';
+
+// Language translations
 const translations = {
     en: {
-        'logo': 'TechStore',
+        'store-name': 'TechLaptops',
+        'nav-home': 'Home',
+        'nav-products': 'Products',
+        'nav-about': 'About',
+        'nav-contact': 'Contact',
+        'nav-admin': 'Admin',
         'hero-title': 'Find Your Perfect Laptop',
-        'hero-subtitle': 'Choose by purpose, not by complicated specs',
-        'categories-title': 'What will you use your laptop for?',
-        'study-title': 'Study & Office Work',
-        'study-desc': 'Perfect for documents, research, and online classes',
-        'coding-title': 'Programming & Development',
-        'coding-desc': 'Powerful enough for coding and software development',
-        'design-title': 'Design & 3D Work',
-        'design-desc': 'High-performance for graphics and 3D modeling',
-        'gaming-title': 'Gaming',
-        'gaming-desc': 'Built for the latest games and entertainment',
-        'study-laptops-title': 'Study & Office Laptops',
-        'coding-laptops-title': 'Programming Laptops',
-        'design-laptops-title': 'Design & 3D Laptops',
-        'gaming-laptops-title': 'Gaming Laptops',
+        'hero-subtitle': 'Professional laptops for every need - Gaming, Coding, Business, Creative Work & Education',
+        'hero-cta': 'Shop Now',
+        'categories-title': 'Shop by Category',
+        'category-gaming': 'Gaming Laptops',
+        'category-gaming-desc': 'High-performance laptops for gaming',
+        'category-coding': 'Coding/Development',
+        'category-coding-desc': 'Perfect for developers and programmers',
+        'category-business': 'Business',
+        'category-business-desc': 'Professional laptops for business',
+        'category-creative': 'Creative Work',
+        'category-creative-desc': 'For designers and content creators',
+        'category-education': 'Education',
+        'category-education-desc': 'Affordable laptops for students',
+        'products-title': 'Our Laptops',
+        'filter-all': 'All',
+        'filter-gaming': 'Gaming',
+        'filter-coding': 'Coding',
+        'filter-business': 'Business',
+        'filter-creative': 'Creative',
+        'filter-education': 'Education',
+        'about-title': 'About TechLaptops',
+        'about-description': 'We are a leading provider of high-quality laptops for professionals, gamers, students, and everyone in between. Our carefully curated selection ensures you find the perfect laptop for your specific needs.',
         'contact-title': 'Contact Us',
-        'contact-subtitle': 'Ready to order? Get in touch with us!',
-        'order-title': 'Order Laptop',
-        'product-label': 'Product:',
-        'name-label': 'Full Name:',
-        'email-label': 'Email:',
-        'phone-label': 'Phone Number:',
-        'address-label': 'Delivery Address:',
-        'notes-label': 'Additional Notes:',
-        'submit-order': 'Submit Order',
-        'order-now': 'Order Now'
-    },
-    ar: {
-        'logo': 'متجر التقنية',
-        'hero-title': 'اعثر على الكمبيوتر المحمول المثالي',
-        'hero-subtitle': 'اختر حسب الغرض، وليس بالمواصفات المعقدة',
-        'categories-title': 'ما الذي ستستخدم الكمبيوتر المحمول من أجله؟',
-        'study-title': 'الدراسة والعمل المكتبي',
-        'study-desc': 'مثالي للمستندات والبحث والفصول الدراسية عبر الإنترنت',
-        'coding-title': 'البرمجة والتطوير',
-        'coding-desc': 'قوي بما يكفي للبرمجة وتطوير البرمجيات',
-        'design-title': 'التصميم والعمل ثلاثي الأبعاد',
-        'design-desc': 'أداء عالي للرسومات والنمذجة ثلاثية الأبعاد',
-        'gaming-title': 'الألعاب',
-        'gaming-desc': 'مصمم لأحدث الألعاب والترفيه',
-        'study-laptops-title': 'أجهزة الكمبيوتر المحمولة للدراسة والمكتب',
-        'coding-laptops-title': 'أجهزة الكمبيوتر المحمولة للبرمجة',
-        'design-laptops-title': 'أجهزة الكمبيوتر المحمولة للتصميم وثلاثي الأبعاد',
-        'gaming-laptops-title': 'أجهزة الكمبيوتر المحمولة للألعاب',
-        'contact-title': 'اتصل بنا',
-        'contact-subtitle': 'مستعد للطلب؟ تواصل معنا!',
-        'order-title': 'طلب الكمبيوتر المحمول',
-        'product-label': 'المنتج:',
-        'name-label': 'الاسم الكامل:',
-        'email-label': 'البريد الإلكتروني:',
-        'phone-label': 'رقم الهاتف:',
-        'address-label': 'عنوان التسليم:',
-        'notes-label': 'ملاحظات إضافية:',
-        'submit-order': 'إرسال الطلب',
-        'order-now': 'اطلب الآن'
+        'contact-email-title': 'Email',
+        'contact-phone-title': 'Phone',
+        'contact-address-title': 'Address',
+        'cart-title': 'Shopping Cart',
+        'cart-total': 'Total',
+        'cart-checkout': 'Checkout',
+        'order-title': 'Complete Your Order',
+        'order-name': 'Full Name',
+        'order-email': 'Email',
+        'order-phone': 'Phone',
+        'order-address': 'Address',
+        'order-notes': 'Order Notes (Optional)',
+        'order-submit': 'Place Order',
+        'footer-copyright': '© 2025 TechLaptops. All rights reserved.',
+        'add-to-cart': 'Add to Cart'
     },
     fr: {
-        'logo': 'TechStore',
+        'store-name': 'TechOrdinateurs',
+        'nav-home': 'Accueil',
+        'nav-products': 'Produits',
+        'nav-about': 'À propos',
+        'nav-contact': 'Contact',
+        'nav-admin': 'Admin',
         'hero-title': 'Trouvez Votre Ordinateur Portable Parfait',
-        'hero-subtitle': 'Choisissez par usage, pas par spécifications compliquées',
-        'categories-title': 'À quoi utiliserez-vous votre ordinateur portable?',
-        'study-title': 'Études et Travail de Bureau',
-        'study-desc': 'Parfait pour les documents, la recherche et les cours en ligne',
-        'coding-title': 'Programmation et Développement',
-        'coding-desc': 'Assez puissant pour le codage et le développement logiciel',
-        'design-title': 'Design et Travail 3D',
-        'design-desc': 'Haute performance pour les graphiques et la modélisation 3D',
-        'gaming-title': 'Gaming',
-        'gaming-desc': 'Conçu pour les derniers jeux et le divertissement',
-        'study-laptops-title': 'Ordinateurs Portables pour Études et Bureau',
-        'coding-laptops-title': 'Ordinateurs Portables pour Programmation',
-        'design-laptops-title': 'Ordinateurs Portables pour Design et 3D',
-        'gaming-laptops-title': 'Ordinateurs Portables Gaming',
-        'contact-title': 'Contactez-Nous',
-        'contact-subtitle': 'Prêt à commander? Contactez-nous!',
-        'order-title': 'Commander un Ordinateur Portable',
-        'product-label': 'Produit:',
-        'name-label': 'Nom Complet:',
-        'email-label': 'Email:',
-        'phone-label': 'Numéro de Téléphone:',
-        'address-label': 'Adresse de Livraison:',
-        'notes-label': 'Notes Supplémentaires:',
-        'submit-order': 'Soumettre la Commande',
-        'order-now': 'Commander Maintenant'
+        'hero-subtitle': 'Ordinateurs portables professionnels pour tous les besoins - Gaming, Codage, Business, Travail Créatif et Éducation',
+        'hero-cta': 'Acheter Maintenant',
+        'categories-title': 'Acheter par Catégorie',
+        'category-gaming': 'Ordinateurs Gaming',
+        'category-gaming-desc': 'Ordinateurs haute performance pour le gaming',
+        'category-coding': 'Codage/Développement',
+        'category-coding-desc': 'Parfait pour les développeurs et programmeurs',
+        'category-business': 'Business',
+        'category-business-desc': 'Ordinateurs professionnels pour le business',
+        'category-creative': 'Travail Créatif',
+        'category-creative-desc': 'Pour les designers et créateurs de contenu',
+        'category-education': 'Éducation',
+        'category-education-desc': 'Ordinateurs abordables pour les étudiants',
+        'products-title': 'Nos Ordinateurs Portables',
+        'filter-all': 'Tous',
+        'filter-gaming': 'Gaming',
+        'filter-coding': 'Codage',
+        'filter-business': 'Business',
+        'filter-creative': 'Créatif',
+        'filter-education': 'Éducation',
+        'about-title': 'À propos de TechOrdinateurs',
+        'about-description': 'Nous sommes un fournisseur leader d\'ordinateurs portables de haute qualité pour les professionnels, gamers, étudiants et tous les autres. Notre sélection soigneusement choisie vous assure de trouver l\'ordinateur portable parfait pour vos besoins spécifiques.',
+        'contact-title': 'Contactez-nous',
+        'contact-email-title': 'Email',
+        'contact-phone-title': 'Téléphone',
+        'contact-address-title': 'Adresse',
+        'cart-title': 'Panier d\'achat',
+        'cart-total': 'Total',
+        'cart-checkout': 'Commander',
+        'order-title': 'Complétez Votre Commande',
+        'order-name': 'Nom Complet',
+        'order-email': 'Email',
+        'order-phone': 'Téléphone',
+        'order-address': 'Adresse',
+        'order-notes': 'Notes de Commande (Optionnel)',
+        'order-submit': 'Passer la Commande',
+        'footer-copyright': '© 2025 TechOrdinateurs. Tous droits réservés.',
+        'add-to-cart': 'Ajouter au Panier'
+    },
+    ar: {
+        'store-name': 'تكنولاب',
+        'nav-home': 'الرئيسية',
+        'nav-products': 'المنتجات',
+        'nav-about': 'حولنا',
+        'nav-contact': 'اتصل بنا',
+        'nav-admin': 'الإدارة',
+        'hero-title': 'اعثر على الحاسوب المحمول المثالي',
+        'hero-subtitle': 'حواسيب محمولة احترافية لكل الاحتياجات - الألعاب، البرمجة، الأعمال، العمل الإبداعي والتعليم',
+        'hero-cta': 'تسوق الآن',
+        'categories-title': 'تسوق حسب الفئة',
+        'category-gaming': 'حواسيب الألعاب',
+        'category-gaming-desc': 'حواسيب عالية الأداء للألعاب',
+        'category-coding': 'البرمجة/التطوير',
+        'category-coding-desc': 'مثالية للمطورين والمبرمجين',
+        'category-business': 'الأعمال',
+        'category-business-desc': 'حواسيب احترافية للأعمال',
+        'category-creative': 'العمل الإبداعي',
+        'category-creative-desc': 'للمصممين ومنشئي المحتوى',
+        'category-education': 'التعليم',
+        'category-education-desc': 'حواسيب بأسعار معقولة للطلاب',
+        'products-title': 'حواسيبنا المحمولة',
+        'filter-all': 'الكل',
+        'filter-gaming': 'الألعاب',
+        'filter-coding': 'البرمجة',
+        'filter-business': 'الأعمال',
+        'filter-creative': 'الإبداعي',
+        'filter-education': 'التعليم',
+        'about-title': 'حول تكنولاب',
+        'about-description': 'نحن مزود رائد للحواسيب المحمولة عالية الجودة للمهنيين واللاعبين والطلاب وجميع الآخرين. اختيارنا المنتقى بعناية يضمن لك العثور على الحاسوب المحمول المثالي لاحتياجاتك المحددة.',
+        'contact-title': 'اتصل بنا',
+        'contact-email-title': 'البريد الإلكتروني',
+        'contact-phone-title': 'الهاتف',
+        'contact-address-title': 'العنوان',
+        'cart-title': 'عربة التسوق',
+        'cart-total': 'المجموع',
+        'cart-checkout': 'الدفع',
+        'order-title': 'أكمل طلبك',
+        'order-name': 'الاسم الكامل',
+        'order-email': 'البريد الإلكتروني',
+        'order-phone': 'الهاتف',
+        'order-address': 'العنوان',
+        'order-notes': 'ملاحظات الطلب (اختياري)',
+        'order-submit': 'تقديم الطلب',
+        'footer-copyright': '© 2025 تكنولاب. جميع الحقوق محفوظة.',
+        'add-to-cart': 'أضف للسلة'
     }
 };
 
-// Database Configuration - Replace with your actual JSONBin.io credentials
-const API_CONFIG = {
-    JSONBIN_API_KEY: '$2a$10$your-api-key-here', // Replace with your JSONBin.io API key
-    LAPTOPS_BIN_ID: '64f8a9b8b89b1e2847d12345', // Replace with your laptops bin ID
-    ORDERS_BIN_ID: '64f8a9b8b89b1e2847d67890'   // Replace with your orders bin ID
-};
-
-let currentLanguage = 'en';
-let currentCategory = null;
-let laptops = {
-    study: [],
-    coding: [],
-    design: [],
-    gaming: []
-};
-
-// DOM Elements
-const modal = document.getElementById('orderModal');
-const closeBtn = document.querySelector('.close');
-const orderForm = document.getElementById('orderForm');
-const orderStatus = document.getElementById('order-status');
-const submitBtn = document.getElementById('submitOrderBtn');
-
-// Initialize the website
-document.addEventListener('DOMContentLoaded', function() {
-    initializeLanguage();
-    initializeEventListeners();
-    showAllCategories();
-    loadLaptopsFromAPI();
-});
-
-// Database API Functions
-async function apiRequest(url, method = 'GET', data = null) {
-    const config = {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': API_CONFIG.JSONBIN_API_KEY
+// Sample products data - Enhanced with more products
+const sampleProducts = [
+    {
+        id: 1,
+        name: {
+            en: "Gaming Beast Pro X1",
+            fr: "Gaming Beast Pro X1",
+            ar: "جيمنج بيست برو إكس1"
+        },
+        category: "gaming",
+        price: 2499.99,
+        brand: "MSI",
+        image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=300&fit=crop",
+        description: {
+            en: "Ultimate gaming laptop with RTX 4080 graphics and Intel i9 processor for maximum performance.",
+            fr: "Ordinateur portable de gaming ultime avec graphiques RTX 4080 et processeur Intel i9 pour des performances maximales.",
+            ar: "حاسوب محمول للألعاب مع RTX 4080 ومعالج Intel i9 للأداء الأقصى."
+        },
+        specs: {
+            processor: "Intel Core i9-13900HX",
+            ram: "32GB DDR5",
+            storage: "1TB NVMe SSD",
+            graphics: "NVIDIA RTX 4080"
         }
-    };
-    
-    if (data) {
-        config.body = JSON.stringify(data);
+    },
+    {
+        id: 2,
+        name: {
+            en: "CodeMaster Pro 15",
+            fr: "CodeMaster Pro 15",
+            ar: "كود ماستر برو 15"
+        },
+        category: "coding",
+        price: 1899.99,
+        brand: "Dell",
+        image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&h=300&fit=crop",
+        description: {
+            en: "Perfect for developers with powerful specs, excellent keyboard, and multiple ports for all your coding needs.",
+            fr: "Parfait pour les développeurs avec des spécifications puissantes, un excellent clavier et plusieurs ports pour tous vos besoins de codage.",
+            ar: "مثالي للمطورين مع مواصفات قوية ولوحة مفاتيح ممتازة ومنافذ متعددة."
+        },
+        specs: {
+            processor: "Intel Core i7-13700H",
+            ram: "16GB DDR4",
+            storage: "512GB NVMe SSD",
+            graphics: "Intel Iris Xe"
+        }
+    },
+    {
+        id: 3,
+        name: {
+            en: "Business Elite 14",
+            fr: "Business Elite 14",
+            ar: "بيزنس إليت 14"
+        },
+        category: "business",
+        price: 1299.99,
+        brand: "HP",
+        image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=300&fit=crop",
+        description: {
+            en: "Professional laptop designed for business users with security features and long battery life.",
+            fr: "Ordinateur portable professionnel conçu pour les utilisateurs d'entreprise avec des fonctionnalités de sécurité et une longue autonomie.",
+            ar: "حاسوب محمول احترافي مصمم للاستخدام التجاري مع ميزات الأمان وعمر بطارية طويل."
+        },
+        specs: {
+            processor: "Intel Core i5-13500H",
+            ram: "16GB DDR4",
+            storage: "256GB NVMe SSD",
+            graphics: "Intel UHD Graphics"
+        }
+    },
+    {
+        id: 4,
+        name: {
+            en: "Creative Studio 16",
+            fr: "Creative Studio 16",
+            ar: "كريتف ستوديو 16"
+        },
+        category: "creative",
+        price: 2299.99,
+        brand: "ASUS",
+        image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
+        description: {
+            en: "High-resolution display and powerful graphics for designers, video editors, and creative professionals.",
+            fr: "Écran haute résolution et graphiques puissants pour les designers, monteurs vidéo et professionnels créatifs.",
+            ar: "شاشة عالية الدقة ورسوميات قوية للمصممين ومحرري الفيديو والمحترفين الإبداعيين."
+        },
+        specs: {
+            processor: "AMD Ryzen 9 7940HS",
+            ram: "32GB DDR5",
+            storage: "1TB NVMe SSD",
+            graphics: "NVIDIA RTX 4070"
+        }
+    },
+    {
+        id: 5,
+        name: {
+            en: "Student Companion 14",
+            fr: "Student Companion 14",
+            ar: "ستيودنت كومبانيون 14"
+        },
+        category: "education",
+        price: 699.99,
+        brand: "Acer",
+        image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=300&fit=crop",
+        description: {
+            en: "Affordable and reliable laptop perfect for students with all essential features for studying and research.",
+            fr: "Ordinateur portable abordable et fiable parfait pour les étudiants avec toutes les fonctionnalités essentielles pour étudier et rechercher.",
+            ar: "حاسوب محمول بأسعار معقولة وموثوق مثالي للطلاب مع جميع الميزات الأساسية للدراسة والبحث."
+        },
+        specs: {
+            processor: "AMD Ryzen 5 5500U",
+            ram: "8GB DDR4",
+            storage: "256GB NVMe SSD",
+            graphics: "AMD Radeon Graphics"
+        }
+    },
+    {
+        id: 6,
+        name: {
+            en: "Gaming Fury 17",
+            fr: "Gaming Fury 17",
+            ar: "جيمنج فيوري 17"
+        },
+        category: "gaming",
+        price: 1999.99,
+        brand: "Lenovo",
+        image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=400&h=300&fit=crop",
+        description: {
+            en: "Large screen gaming laptop with RGB keyboard and advanced cooling system for intense gaming sessions.",
+            fr: "Grand écran d'ordinateur portable de gaming avec clavier RGB et système de refroidissement avancé pour des sessions de jeu intenses.",
+            ar: "حاسوب محمول للألعاب بشاشة كبيرة مع لوحة مفاتيح RGB ونظام تبريد متقدم."
+        },
+        specs: {
+            processor: "Intel Core i7-12700H",
+            ram: "16GB DDR4",
+            storage: "512GB NVMe SSD",
+            graphics: "NVIDIA RTX 4060"
+        }
+    },
+    {
+        id: 7,
+        name: {
+            en: "Dev Power 13",
+            fr: "Dev Power 13",
+            ar: "ديف باور 13"
+        },
+        category: "coding",
+        price: 1599.99,
+        brand: "Apple",
+        image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop",
+        description: {
+            en: "Compact and powerful laptop with excellent build quality, perfect for mobile development and coding on the go.",
+            fr: "Ordinateur portable compact et puissant avec une excellente qualité de construction, parfait pour le développement mobile et le codage en déplacement.",
+            ar: "حاسوب محمول صغير وقوي بجودة بناء ممتازة، مثالي للتطوير المحمول والبرمجة أثناء التنقل."
+        },
+        specs: {
+            processor: "Apple M2 Pro",
+            ram: "16GB Unified Memory",
+            storage: "512GB SSD",
+            graphics: "10-core GPU"
+        }
+    },
+    {
+        id: 8,
+        name: {
+            en: "Business Pro 15",
+            fr: "Business Pro 15",
+            ar: "بيزنس برو 15"
+        },
+        category: "business",
+        price: 1799.99,
+        brand: "ThinkPad",
+        image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&h=300&fit=crop",
+        description: {
+            en: "Enterprise-grade laptop with military-grade durability, advanced security features, and professional performance.",
+            fr: "Ordinateur portable de qualité entreprise avec durabilité de grade militaire, fonctionnalités de sécurité avancées et performances professionnelles.",
+            ar: "حاسوب محمول بمستوى المؤسسات مع متانة عسكرية وميزات أمان متقدمة وأداء احترافي."
+        },
+        specs: {
+            processor: "Intel Core i7-13700H",
+            ram: "32GB DDR5",
+            storage: "1TB NVMe SSD",
+            graphics: "Intel Iris Xe"
+        }
     }
+];
+
+// Initialize data
+function initializeData() {
+    // Load data from localStorage if available
+    const savedProducts = localStorage.getItem('products');
+    const savedCart = localStorage.getItem('cart');
+    const savedOrders = localStorage.getItem('orders');
     
-    try {
-        const response = await fetch(url, config);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('API request failed:', error);
-        throw error;
-    }
-}
-
-async function loadLaptopsFromAPI() {
-    try {
-        showLoadingMessage();
-        const response = await apiRequest(`https://api.jsonbin.io/v3/b/${API_CONFIG.LAPTOPS_BIN_ID}/latest`);
-        
-        if (response && response.record) {
-            laptops = response.record;
-            displayAllCategories();
-        } else {
-            console.log('No laptops data found, using demo data');
-            loadDemoLaptops();
-        }
-    } catch (error) {
-        console.error('Failed to load laptops from API:', error);
-        loadDemoLaptops(); // Fallback to demo data
-    }
-}
-
-async function saveOrderToAPI(orderData) {
-    try {
-        // First, get existing orders
-        let existingOrders = [];
-        try {
-            const response = await apiRequest(`https://api.jsonbin.io/v3/b/${API_CONFIG.ORDERS_BIN_ID}/latest`);
-            if (response && response.record && Array.isArray(response.record)) {
-                existingOrders = response.record;
-            }
-        } catch (error) {
-            console.log('No existing orders found, creating new orders array');
-        }
-        
-        // Add new order with unique ID and timestamp
-        const newOrder = {
-            id: Date.now(),
-            timestamp: new Date().toISOString(),
-            ...orderData
-        };
-        
-        existingOrders.push(newOrder);
-        
-        // Save updated orders array
-        await apiRequest(
-            `https://api.jsonbin.io/v3/b/${API_CONFIG.ORDERS_BIN_ID}`,
-            'PUT',
-            existingOrders
-        );
-        
-        return true;
-    } catch (error) {
-        console.error('Failed to save order to API:', error);
-        throw error;
-    }
-}
-
-function loadDemoLaptops() {
-    // Demo data for testing
-    laptops = {
-        study: [
-            {
-                name: "HP Pavilion 15",
-                specs: "Intel Core i5 • 8GB RAM • 256GB SSD • 15.6\" HD Display",
-                price: "$599",
-                description: "Perfect for students and office work with reliable performance.",
-                image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400"
-            },
-            {
-                name: "Lenovo IdeaPad 3",
-                specs: "AMD Ryzen 5 • 8GB RAM • 512GB SSD • 14\" FHD Display",
-                price: "$549",
-                description: "Lightweight and efficient for daily computing tasks.",
-                image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400"
-            }
-        ],
-        coding: [
-            {
-                name: "Dell XPS 13",
-                specs: "Intel Core i7 • 16GB RAM • 512GB SSD • 13.3\" 4K Display",
-                price: "$1299",
-                description: "Premium ultrabook perfect for developers and programmers.",
-                image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400"
-            }
-        ],
-        design: [
-            {
-                name: "MacBook Pro 16\"",
-                specs: "Apple M2 Pro • 32GB RAM • 1TB SSD • 16\" Retina Display",
-                price: "$2499",
-                description: "Professional-grade laptop for graphic design and video editing.",
-                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400"
-            }
-        ],
-        gaming: [
-            {
-                name: "ASUS ROG Strix",
-                specs: "Intel Core i7 • 16GB RAM • RTX 4060 • 1TB SSD • 15.6\" 144Hz Display",
-                price: "$1599",
-                description: "High-performance gaming laptop for the latest AAA games.",
-                image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400"
-            }
-        ]
-    };
-    displayAllCategories();
-}
-
-function showLoadingMessage() {
-    document.querySelectorAll('.product-grid').forEach(grid => {
-        grid.innerHTML = '<div class="no-products">Loading laptops...</div>';
-    });
-}
-
-// Language functionality
-function initializeLanguage() {
-    updateLanguage(currentLanguage);
-}
-
-function updateLanguage(lang) {
-    currentLanguage = lang;
-    
-    // Update all text elements with data-key attributes
-    document.querySelectorAll('[data-key]').forEach(element => {
-        const key = element.getAttribute('data-key');
-        if (translations[lang] && translations[lang][key]) {
-            element.textContent = translations[lang][key];
-        }
-    });
-    
-    // Update language buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-lang') === lang) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // Update RTL for Arabic
-    if (lang === 'ar') {
-        document.body.setAttribute('dir', 'rtl');
+    if (savedProducts) {
+        products = JSON.parse(savedProducts);
     } else {
-        document.body.setAttribute('dir', 'ltr');
+        products = [...sampleProducts];
+        saveProducts();
     }
     
-    // Refresh current category display
-    if (currentCategory) {
-        showCategory(currentCategory);
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
     }
+    
+    if (savedOrders) {
+        orders = JSON.parse(savedOrders);
+    }
+    
+    updateCartUI();
+    displayProducts();
 }
 
-// Event listeners
-function initializeEventListeners() {
-    // Language buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const lang = this.getAttribute('data-lang');
-            updateLanguage(lang);
-        });
-    });
+// Save functions
+function saveProducts() {
+    localStorage.setItem('products', JSON.stringify(products));
+}
+
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function saveOrders() {
+    localStorage.setItem('orders', JSON.stringify(orders));
+}
+
+// Language functions
+function changeLanguage() {
+    const select = document.getElementById('languageSelect');
+    currentLanguage = select.value;
     
-    // Category cards
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const category = this.getAttribute('data-category');
-            showCategory(category);
-            
-            // Update active state
-            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    // Update HTML direction for Arabic
+    const html = document.documentElement;
+    if (currentLanguage === 'ar') {
+        html.setAttribute('dir', 'rtl');
+        html.setAttribute('lang', 'ar');
+    } else {
+        html.setAttribute('dir', 'ltr');
+        html.setAttribute('lang', currentLanguage);
+    }
     
-    // Modal functionality
-    closeBtn.addEventListener('click', closeModal);
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closeModal();
+    updateTexts();
+    displayProducts(); // Refresh products to show in new language
+}
+
+function updateTexts() {
+    const elements = document.querySelectorAll('[data-key]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-key');
+        if (translations[currentLanguage] && translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
         }
     });
-    
-    // Order form submission
-    orderForm.addEventListener('submit', handleOrderSubmission);
 }
 
-// Category and product display
-function showAllCategories() {
-    // Hide all product sections initially
-    document.querySelectorAll('.products').forEach(section => {
-        section.classList.remove('active');
-    });
+function getText(key) {
+    return translations[currentLanguage][key] || key;
 }
 
-function showCategory(category) {
-    currentCategory = category;
+// Product functions
+function displayProducts() {
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return;
     
-    // Hide all product sections
-    document.querySelectorAll('.products').forEach(section => {
-        section.classList.remove('active');
-    });
+    const filteredProducts = currentFilter === 'all' 
+        ? products 
+        : products.filter(product => product.category === currentFilter);
     
-    // Show selected category
-    const categorySection = document.getElementById(`products-${category}`);
-    if (categorySection) {
-        categorySection.classList.add('active');
-        displayProducts(category);
-        
-        // Scroll to products section
-        categorySection.scrollIntoView({ behavior: 'smooth' });
+    grid.innerHTML = filteredProducts.map(product => `
+        <div class="product-card">
+            <img src="${product.image}" alt="${product.name[currentLanguage]}" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">${product.name[currentLanguage]}</h3>
+                <p class="product-category">${product.brand}</p>
+                <p class="product-price">$${product.price}</p>
+                <p class="product-description">${product.description[currentLanguage]}</p>
+                <div class="product-specs">
+                    <div><span>Processor:</span> <span>${product.specs.processor}</span></div>
+                    <div><span>RAM:</span> <span>${product.specs.ram}</span></div>
+                    <div><span>Storage:</span> <span>${product.specs.storage}</span></div>
+                    <div><span>Graphics:</span> <span>${product.specs.graphics}</span></div>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+                    ${getText('add-to-cart')}
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterCategory(category) {
+    currentFilter = category;
+    
+    // Update active filter button
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => btn.classList.remove('active'));
+    
+    const activeBtn = document.querySelector(`[onclick="filterCategory('${category}')"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+    
+    displayProducts();
+    
+    // Scroll to products section
+    if (category !== 'all') {
+        scrollToProducts();
     }
 }
 
-function displayAllCategories() {
-    // Display products for all categories
-    Object.keys(laptops).forEach(category => {
-        displayProducts(category);
-    });
+function scrollToProducts() {
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
 
-function displayProducts(category) {
-    const productGrid = document.getElementById(`${category}-products`);
-    if (!productGrid) return;
+// Cart functions
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
     
-    const categoryLaptops = laptops[category] || [];
+    const existingItem = cart.find(item => item.id === productId);
     
-    if (categoryLaptops.length === 0) {
-        productGrid.innerHTML = '<div class="no-products">No products available in this category yet.</div>';
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1
+        });
+    }
+    
+    saveCart();
+    updateCartUI();
+    
+    // Show feedback
+    showNotification('Product added to cart!');
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    saveCart();
+    updateCartUI();
+    displayCart();
+}
+
+function updateQuantity(productId, quantity) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        if (quantity <= 0) {
+            removeFromCart(productId);
+        } else {
+            item.quantity = quantity;
+            saveCart();
+            updateCartUI();
+            displayCart();
+        }
+    }
+}
+
+function updateCartUI() {
+    const cartCount = document.getElementById('cartCount');
+    if (cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+    }
+}
+
+function toggleCart() {
+    const modal = document.getElementById('cartModal');
+    if (modal.style.display === 'block') {
+        modal.style.display = 'none';
+    } else {
+        displayCart();
+        modal.style.display = 'block';
+    }
+}
+
+function displayCart() {
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<p>Your cart is empty</p>';
+        cartTotal.textContent = '0';
         return;
     }
     
-    productGrid.innerHTML = '';
-    
-    categoryLaptops.forEach((laptop, index) => {
-        const productCard = createProductCard(laptop, category, index);
-        productGrid.appendChild(productCard);
-    });
-}
-
-function createProductCard(laptop, category, index) {
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    
-    card.innerHTML = `
-        <div class="product-image">
-            <img src="${laptop.image}" alt="${laptop.name}" onerror="this.style.display='none'">
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <img src="${item.image}" alt="${item.name[currentLanguage]}">
+            <div class="cart-item-info">
+                <h4>${item.name[currentLanguage]}</h4>
+                <p>$${item.price}</p>
+                <div class="quantity-controls">
+                    <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                </div>
+            </div>
+            <button class="remove-item" onclick="removeFromCart(${item.id})">×</button>
         </div>
-        <div class="product-name">${laptop.name}</div>
-        <div class="product-specs">${laptop.specs}</div>
-        <div class="product-description">${laptop.description}</div>
-        <div class="product-price">${laptop.price}</div>
-        <button class="order-btn" onclick="openOrderModal('${laptop.name}', '${laptop.price}')">
-            <span data-key="order-now">${translations[currentLanguage]['order-now']}</span>
-        </button>
-    `;
+    `).join('');
     
-    return card;
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    cartTotal.textContent = total.toFixed(2);
 }
 
-// Modal functionality
-function openOrderModal(productName, productPrice) {
-    document.getElementById('productName').value = `${productName} - ${productPrice}`;
-    modal.style.display = 'block';
-    resetOrderStatus();
+// Order functions
+function checkout() {
+    if (cart.length === 0) {
+        showNotification('Your cart is empty!');
+        return;
+    }
+    
+    toggleCart();
+    document.getElementById('orderModal').style.display = 'block';
 }
 
-function closeModal() {
-    modal.style.display = 'none';
-    orderForm.reset();
-    resetOrderStatus();
+function closeOrderModal() {
+    document.getElementById('orderModal').style.display = 'none';
 }
 
-function resetOrderStatus() {
-    orderStatus.className = 'order-status';
-    orderStatus.style.display = 'none';
-    orderStatus.textContent = '';
-    submitBtn.disabled = false;
-    submitBtn.textContent = translations[currentLanguage]['submit-order'];
-}
-
-function showOrderStatus(type, message) {
-    orderStatus.className = `order-status ${type}`;
-    orderStatus.style.display = 'block';
-    orderStatus.textContent = message;
-}
-
-// Order handling
-async function handleOrderSubmission(event) {
+function submitOrder(event) {
     event.preventDefault();
     
-    // Disable submit button and show loading
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    showOrderStatus('loading', 'Submitting your order...');
-    
-    // Collect form data
     const orderData = {
-        product: document.getElementById('productName').value,
-        name: document.getElementById('customerName').value,
-        email: document.getElementById('customerEmail').value,
-        phone: document.getElementById('customerPhone').value,
-        address: document.getElementById('customerAddress').value,
-        notes: document.getElementById('orderNotes').value,
-        date: new Date().toLocaleDateString(),
-        status: 'pending'
+        id: Date.now(),
+        customerName: document.getElementById('customerName').value,
+        customerEmail: document.getElementById('customerEmail').value,
+        customerPhone: document.getElementById('customerPhone').value,
+        customerAddress: document.getElementById('customerAddress').value,
+        orderNotes: document.getElementById('orderNotes').value,
+        items: [...cart],
+        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        status: 'pending',
+        date: new Date().toISOString()
     };
     
-    try {
-        // Save order to database
-        await saveOrderToAPI(orderData);
-        
-        // Show success message
-        showOrderStatus('success', 'Order submitted successfully! We will contact you soon.');
-        
-        // Reset form after delay
-        setTimeout(() => {
-            closeModal();
-        }, 3000);
-    } catch (error) {
-        console.error('Order submission failed:', error);
-        showOrderStatus('error', 'Failed to submit order. Please try again or contact us directly.');
-        
-        // Re-enable submit button
-        submitBtn.disabled = false;
-        submitBtn.textContent = translations[currentLanguage]['submit-order'];
+    orders.push(orderData);
+    saveOrders();
+    
+    // Clear cart
+    cart = [];
+    saveCart();
+    updateCartUI();
+    
+    // Close modal
+    closeOrderModal();
+    
+    // Show success message
+    showNotification('Order placed successfully! We will contact you soon.');
+    
+    // Reset form
+    document.getElementById('orderForm').reset();
+}
+
+// Admin functions
+function loadAdminData() {
+    updateDashboardStats();
+    loadAdminProducts();
+    loadAdminOrders();
+    displayRecentOrders();
+}
+
+function updateDashboardStats() {
+    const totalProducts = document.getElementById('totalProducts');
+    const totalOrders = document.getElementById('totalOrders');
+    const pendingOrders = document.getElementById('pendingOrders');
+    
+    if (totalProducts) totalProducts.textContent = products.length;
+    if (totalOrders) totalOrders.textContent = orders.length;
+    if (pendingOrders) {
+        const pending = orders.filter(order => order.status === 'pending').length;
+        pendingOrders.textContent = pending;
     }
 }
 
-// Utility functions for admin integration
-function getLaptopsData() {
-    return laptops;
+function loadAdminProducts() {
+    const container = document.getElementById('adminProductsList');
+    if (!container) return;
+    
+    container.innerHTML = products.map(product => `
+        <div class="admin-product-card">
+            <img src="${product.image}" alt="${product.name.en}">
+            <div class="admin-product-info">
+                <h3>${product.name.en}</h3>
+                <p>Category: ${product.category}</p>
+                <p>Price: $${product.price}</p>
+                <p>Brand: ${product.brand}</p>
+                <div class="admin-product-actions">
+                    <button onclick="editProduct(${product.id})" class="edit-btn">Edit</button>
+                    <button onclick="deleteProduct(${product.id})" class="delete-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 
-function updateLaptopsData(newLaptops) {
-    laptops = newLaptops;
-    displayAllCategories();
-}
-
-// Auto-refresh laptops data every 30 seconds
-setInterval(async () => {
-    try {
-        await loadLaptopsFromAPI();
-    } catch (error) {
-        console.log('Auto-refresh failed:', error);
-    }
-}, 30000);
+function loadAdminOrders() {
+    const container = document.getElementById('ordersList');
+    if (!container) return;
+    
+    const filteredOrders = getFilteredOrders();
+    
+    container.innerHTML = filteredOrders.map(order => `
+        <div class="order-card">
+            <div class="order-header">
+                <h3>Order #${order.id}</h3>
+                <span class="order-status status-${order.status}">${order.status}</span>
+            </div>
+            <div class="order-details">
+                <p><strong>Customer:</strong> ${order.customerName}</p>
+                <p><strong>Email:</strong> ${order.customerEmail}</p>
+                <p><strong>Phone:</strong> ${order.customerPhone}</p>
+                <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
+                <p><strong>Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
+                <div class="order-items">
+                    <strong>Items:</strong>
+                    ${order.items.map(item => `
+                        <div class="order-item">
+                            ${item.name.en} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-actions">
+                    <select onchange="updateOrderStatus(${order.i
